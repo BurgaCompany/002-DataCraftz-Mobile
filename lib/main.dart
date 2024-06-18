@@ -1,5 +1,6 @@
 import 'package:datacraftz_mobile/constant/routes.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/core/provider/bus_provider.dart';
 import 'package:datacraftz_mobile/core/provider/page_switcher_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,19 +19,27 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       minTextAdapt: true,
       builder: (context, child) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => PageIndexProvider()),
-          ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: tittleApp,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
-              useMaterial3: true,
+        ScreenUtil.init(context);
+        return MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(1.0)),
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => PageIndexProvider()),
+              ChangeNotifierProvider(create: (_) => BusProvider()),
+            ],
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: tittleApp,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: primaryColor,
+                ),
+                useMaterial3: true,
+              ),
+              initialRoute: '/',
+              routes: routes,
             ),
-            initialRoute: '/',
-            routes: routes,
           ),
         );
       },

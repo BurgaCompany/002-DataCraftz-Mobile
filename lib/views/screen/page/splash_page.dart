@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:flutter/material.dart';
 
-class SpalshScreenPage extends StatefulWidget {
+class SplashScreenPage extends StatefulWidget {
   static const String routeName = '/';
-  const SpalshScreenPage({super.key});
+  const SplashScreenPage({super.key});
 
   @override
-  State<SpalshScreenPage> createState() => _SpalshScreenPageState();
+  State<SplashScreenPage> createState() => _SplashScreenPageState();
 }
 
-class _SpalshScreenPageState extends State<SpalshScreenPage> {
+class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
