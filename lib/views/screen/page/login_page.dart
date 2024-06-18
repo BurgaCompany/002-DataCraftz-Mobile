@@ -1,7 +1,7 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/views/screen/page/base_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/register_page.dart';
-import 'package:datacraftz_mobile/views/widgets/button_widget.dart';
+import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/form_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: lightColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 26),
@@ -72,7 +73,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, RegisterPage.routeName);
+                  Navigator.pushReplacementNamed(
+                      context, RegisterPage.routeName);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

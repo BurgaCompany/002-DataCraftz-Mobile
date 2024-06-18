@@ -1,5 +1,6 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
-import 'package:datacraftz_mobile/views/widgets/button_widget.dart';
+import 'package:datacraftz_mobile/views/screen/page/login_page.dart';
+import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/form_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: lightColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 26),
@@ -85,6 +87,31 @@ class _RegisterPageState extends State<RegisterPage> {
                       title: 'Daftar',
                       onPressed: () {},
                     )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: DevicesSettings.getHeigth(context) / 100,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, LoginPage.routeName);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Sudah punya akun?',
+                      style: blackTextStyle.copyWith(
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      'Masuk',
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
               ),
