@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/views/screen/page/base_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/driver/base_page_driver.dart';
+import 'package:datacraftz_mobile/views/screen/page/login_page.dart';
+import 'package:datacraftz_mobile/views/utils/shared_user.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -19,6 +23,23 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       const Duration(seconds: 3),
       () => Navigator.pushReplacementNamed(context, '/login-page'),
     );
+    _checkUserSession();
+  }
+
+  Future<void> _checkUserSession() async {
+    await Future.delayed(const Duration(seconds: 3));
+    final userModel = await Session.getUser();
+    if (userModel != null && mounted) {
+      if (userModel.role == 'Passenger') {
+        Navigator.pushReplacementNamed(context, BasePage.routeName);
+      } else {
+        Navigator.pushReplacementNamed(context, BaseDriverPage.routeName);
+      }
+    } else {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, LoginPage.routeName);
+      }
+    }
   }
 
   @override

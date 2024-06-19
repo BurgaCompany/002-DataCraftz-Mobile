@@ -1,9 +1,8 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:flutter/material.dart';
 
-class CustomFormField extends StatelessWidget {
+class CustomFormField extends StatefulWidget {
   final String title;
-  final bool obscureText;
   final TextEditingController? controller;
   final TextInputType? textInputType;
   final bool isShowTitle;
@@ -12,7 +11,6 @@ class CustomFormField extends StatelessWidget {
   const CustomFormField({
     super.key,
     required this.title,
-    this.obscureText = false,
     this.controller,
     this.textInputType,
     this.isShowTitle = true,
@@ -20,33 +18,55 @@ class CustomFormField extends StatelessWidget {
   });
 
   @override
+  State<CustomFormField> createState() => _CustomFormFieldState();
+}
+
+class _CustomFormFieldState extends State<CustomFormField> {
+  bool _isObscure = true;
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (isShowTitle)
+        if (widget.isShowTitle)
           Text(
-            title,
+            widget.title,
             style: blackTextStyle.copyWith(
               fontWeight: medium,
             ),
           ),
-        if (isShowTitle)
+        if (widget.isShowTitle)
           const SizedBox(
             height: 8,
           ),
         TextFormField(
-          obscureText: obscureText,
-          controller: controller,
-          keyboardType: textInputType,
+          obscureText: widget.textInputType == TextInputType.visiblePassword
+              ? _isObscure
+              : false,
+          controller: widget.controller,
+          keyboardType: widget.textInputType,
           decoration: InputDecoration(
-            hintText: !isShowTitle ? title : null,
+            hintText: !widget.isShowTitle ? widget.title : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
             ),
             contentPadding: const EdgeInsets.all(12),
+            suffixIcon: widget.textInputType == TextInputType.visiblePassword
+                ? IconButton(
+                    icon: Icon(
+                      _isObscure ? Icons.visibility_off : Icons.visibility,
+                      color: primaryColor,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    },
+                  )
+                : null,
           ),
-          onFieldSubmitted: onFieldSubmitted,
+          onFieldSubmitted: widget.onFieldSubmitted,
         ),
       ],
     );

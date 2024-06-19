@@ -1,9 +1,14 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
 import 'package:datacraftz_mobile/views/screen/page/base_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/driver/base_page_driver.dart';
 import 'package:datacraftz_mobile/views/screen/page/register_page.dart';
+import 'package:datacraftz_mobile/views/utils/validation.dart';
 import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
+import 'package:datacraftz_mobile/views/widgets/custom_snackbar.dart';
 import 'package:datacraftz_mobile/views/widgets/form_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   static const String routeName = '/login-page';
@@ -16,6 +21,47 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  void login() async {
+    AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
+    if (emailController.text.isEmpty) {
+      const CustomSnackBar(
+        message: 'Email Tidak Boleh Kosong',
+        type: SnackBarType.warning,
+      ).show(context);
+    } else if (!validateEmail(emailController.text)) {
+      const CustomSnackBar(
+        message: 'Email Tidak valid',
+        type: SnackBarType.warning,
+      ).show(context);
+    } else if (passwordController.text.isEmpty) {
+      const CustomSnackBar(
+        message: 'Password Tidak Boleh Kosong',
+        type: SnackBarType.warning,
+      ).show(context);
+    } else {
+      final response = await authProvider.authLogin(
+        emailController.text,
+        passwordController.text,
+      );
+      if (response['statusCode'] == 200 && mounted) {
+        final role = response['role'];
+        if (role == 'Passenger') {
+          Navigator.pushNamed(context, BasePage.routeName);
+        } else {
+          Navigator.pushNamed(context, BaseDriverPage.routeName);
+        }
+      } else {
+        if (mounted) {
+          const CustomSnackBar(
+            message: 'Email atau Password Salah',
+            type: SnackBarType.error,
+          ).show(context);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +101,14 @@ class _LoginPageState extends State<LoginPage> {
                     CustomFormField(
                       title: 'Password',
                       controller: passwordController,
+                      textInputType: TextInputType.visiblePassword,
                     ),
                     const SizedBox(
                       height: 14,
                     ),
                     CustomFilledButton(
                       title: 'Masuk',
-                      onPressed: () {
-                        Navigator.pushNamed(context, BasePage.routeName);
-                      },
+                      onPressed: login,
                     )
                   ],
                 ),

@@ -1,5 +1,7 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/views/screen/page/list_split_bill.dart';
+import 'package:datacraftz_mobile/views/screen/page/login_page.dart';
+import 'package:datacraftz_mobile/views/utils/shared_user.dart';
 import 'package:datacraftz_mobile/views/widgets/profile_menu_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -92,7 +94,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 ProfileMenuItem(
                   iconUrl: Icons.logout_outlined,
                   title: 'Log Out',
-                  onTap: () {},
+                  onTap: () async {
+                    await Session.clearUser();
+                    Navigator.pushNamed(context, LoginPage.routeName);
+                  },
                 ),
               ],
             ),
