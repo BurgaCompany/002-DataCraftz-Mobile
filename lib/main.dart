@@ -1,5 +1,6 @@
 import 'package:datacraftz_mobile/constant/routes.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
 import 'package:datacraftz_mobile/core/provider/bus_provider.dart';
 import 'package:datacraftz_mobile/core/provider/page_switcher_provider.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
             providers: [
               ChangeNotifierProvider(create: (_) => PageIndexProvider()),
               ChangeNotifierProvider(create: (_) => BusProvider()),
+              ChangeNotifierProvider(create: (_) => AuthProvider()),  
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
