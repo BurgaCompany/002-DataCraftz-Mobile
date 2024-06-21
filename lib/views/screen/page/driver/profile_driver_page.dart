@@ -99,6 +99,7 @@ class _ProfileDriverPageState extends State<ProfileDriverPage> {
                   title: 'Log Out',
                   onTap: () async {
                     await Session.clearUser();
+                    // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, LoginPage.routeName);
                   },
                 ),

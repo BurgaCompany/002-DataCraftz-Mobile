@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 class SearchFormWidget extends StatelessWidget {
   final TextEditingController controller;
+  final ValueChanged<String>? onChanged;
   const SearchFormWidget({
     super.key,
     required this.controller,
+    this.onChanged,
   });
 
   @override
@@ -38,6 +40,7 @@ class SearchFormWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
+              onChanged: onChanged,
             ),
           ),
         ),

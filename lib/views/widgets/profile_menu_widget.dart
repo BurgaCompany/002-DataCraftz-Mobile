@@ -1,18 +1,15 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
-import 'package:datacraftz_mobile/views/widgets/notification_badge_bar.dart';
 import 'package:flutter/material.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   final IconData iconUrl;
   final String title;
-  final int? notification;
   final VoidCallback? onTap;
 
   const ProfileMenuItem({
     super.key,
     required this.iconUrl,
     required this.title,
-    this.notification,
     this.onTap,
   });
 
@@ -39,11 +36,6 @@ class ProfileMenuItem extends StatelessWidget {
                 fontWeight: medium,
               ),
             ),
-            const Spacer(),
-            if (notification != null)
-              NotificationBadge(
-                notificationCount: notification!,
-              )
           ],
         ),
       ),

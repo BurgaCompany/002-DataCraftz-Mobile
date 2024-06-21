@@ -1,5 +1,6 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/views/screen/page/payment_ticket_page.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
 import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/custom_container.dart';
@@ -7,9 +8,9 @@ import 'package:datacraftz_mobile/views/widgets/line_bus_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/tear_effect.dart';
 import 'package:flutter/material.dart';
 
-class SplitBillPage extends StatelessWidget {
-  static const String routeName = '/payment-ticket-page';
-  const SplitBillPage({super.key});
+class CheckTicketPage extends StatelessWidget {
+  static const String routeName = '/check-ticket-page';
+  const CheckTicketPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class SplitBillPage extends StatelessWidget {
         iconTheme: IconThemeData(color: whiteColor),
         backgroundColor: primaryColor,
         title: Text(
-          'Pembayaran Tiket',
+          'Tiket Berlangsung',
           style: whiteTextStyle.copyWith(
             fontSize: 18,
             fontWeight: medium,
@@ -410,9 +411,11 @@ class SplitBillPage extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(20),
         child: CustomFilledButton(
-          title: 'Bayar',
-          color: primaryColor,
-          onPressed: () {},
+          title: 'Batalkan Perjalanan',
+          color: Colors.red,
+          onPressed: () {
+            Navigator.pushNamed(context, PaymentTicketPage.routeName);
+          },
         ),
       ),
     );

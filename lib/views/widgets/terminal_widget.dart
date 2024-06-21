@@ -1,14 +1,34 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/views/utils/convert_string.dart';
 import 'package:datacraftz_mobile/views/widgets/custom_button_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/line_bus_widget.dart';
 import 'package:flutter/material.dart';
 
 class TerminalWidget extends StatelessWidget {
-  final String title;
+  final String titleButton;
+  final String? titleStation,
+      chair,
+      fromStation,
+      toStation,
+      pwt,
+      timeStart,
+      timeEnd,
+      typeBus;
+  final int? price;
+
   final VoidCallback onTap;
   const TerminalWidget({
     super.key,
-    required this.title,
+    required this.titleButton,
+    this.titleStation,
+    this.chair,
+    this.fromStation,
+    this.toStation,
+    this.pwt,
+    this.timeStart,
+    this.timeEnd,
+    this.price,
+    this.typeBus,
     required this.onTap,
   });
 
@@ -26,7 +46,7 @@ class TerminalWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Terminal Bondowoso',
+            titleStation ?? '',
             style: greyTextStyle.copyWith(
               fontSize: 14,
               fontWeight: bold,
@@ -43,14 +63,14 @@ class TerminalWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'BWS',
+                      fromStation ?? '',
                       style: greyTextStyle.copyWith(
                         fontSize: 12,
                         fontWeight: bold,
                       ),
                     ),
                     Text(
-                      '08:00',
+                      timeStart.toString().substring(0, 5),
                       style: blackTextStyle.copyWith(
                         fontSize: 14,
                         fontWeight: semiBold,
@@ -60,7 +80,7 @@ class TerminalWidget extends StatelessWidget {
                       height: DevicesSettings.getHeigth(context) / 54,
                     ),
                     Text(
-                      'Rp 115.000',
+                      formatCurrency(price ?? 0),
                       style: blackTextStyle.copyWith(
                         fontSize: 12,
                         fontWeight: bold,
@@ -78,14 +98,14 @@ class TerminalWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      'SBY',
+                      toStation ?? '',
                       style: greyTextStyle.copyWith(
                         fontSize: 12,
                         fontWeight: bold,
                       ),
                     ),
                     Text(
-                      '10:20',
+                      timeEnd.toString().substring(0, 5),
                       style: blackTextStyle.copyWith(
                         fontSize: 14,
                         fontWeight: semiBold,
@@ -95,7 +115,7 @@ class TerminalWidget extends StatelessWidget {
                       height: DevicesSettings.getHeigth(context) / 54,
                     ),
                     Text(
-                      '2 Tersisa',
+                      '$chair Tersisa',
                       style: redTextStyle.copyWith(
                         fontSize: 12,
                         fontWeight: bold,
@@ -118,25 +138,42 @@ class TerminalWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.orange[100],
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  'Kelas Ekonomi',
-                  style: orangeTextStyle.copyWith(
-                    fontSize: 12,
-                    fontWeight: semiBold,
+              if (typeBus == 'Patas')
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.lightGreen[100],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    'Kelas $typeBus',
+                    style: orangeTextStyle.copyWith(
+                      fontSize: 12,
+                      color: Colors.green[500],
+                      fontWeight: semiBold,
+                    ),
+                  ),
+                )
+              else
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.orange[100],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    'Kelas $typeBus',
+                    style: orangeTextStyle.copyWith(
+                      fontSize: 12,
+                      fontWeight: semiBold,
+                    ),
                   ),
                 ),
-              ),
               const SizedBox(
                 width: 10,
               ),
               Text(
-                '2 Jam 20 Menit',
+                pwt ?? '',
                 style: greyTextStyle.copyWith(
                   fontSize: 12,
                   fontWeight: bold,
@@ -144,7 +181,7 @@ class TerminalWidget extends StatelessWidget {
               ),
               const Spacer(),
               CustomButton(
-                title: title,
+                title: titleButton,
                 height: 30,
                 width: 70,
                 onPressed: onTap,

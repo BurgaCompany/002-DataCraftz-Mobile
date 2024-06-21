@@ -1,5 +1,4 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
-import 'package:datacraftz_mobile/views/screen/page/list_split_bill.dart';
 import 'package:datacraftz_mobile/views/screen/page/login_page.dart';
 import 'package:datacraftz_mobile/views/utils/shared_user.dart';
 import 'package:datacraftz_mobile/views/widgets/profile_menu_widget.dart';
@@ -13,7 +12,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final int _notificationCount = 10;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,18 +82,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () {},
                 ),
                 ProfileMenuItem(
-                  iconUrl: Icons.payment,
-                  title: 'Pembayaran',
-                  onTap: () {
-                    Navigator.pushNamed(context, ListPaymentPage.routeName);
-                  },
-                  notification: _notificationCount,
-                ),
-                ProfileMenuItem(
                   iconUrl: Icons.logout_outlined,
                   title: 'Log Out',
                   onTap: () async {
                     await Session.clearUser();
+                    // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, LoginPage.routeName);
                   },
                 ),
