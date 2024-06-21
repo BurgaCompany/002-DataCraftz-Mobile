@@ -61,7 +61,7 @@ class _PaymentTicketPageState extends State<PaymentTicketPage> {
         backgroundColor: primaryColor,
         iconTheme: IconThemeData(color: whiteColor),
         title: Text(
-          'Posisi Bus',
+          'Pembayaran',
           style: whiteTextStyle.copyWith(
             color: whiteColor,
             fontWeight: medium,
