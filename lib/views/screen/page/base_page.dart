@@ -1,10 +1,11 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/core/model/login_model.dart';
+import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
 import 'package:datacraftz_mobile/core/provider/page_switcher_provider.dart';
 import 'package:datacraftz_mobile/views/screen/fragments/dashboard_page.dart';
 import 'package:datacraftz_mobile/views/screen/fragments/history_page.dart';
 import 'package:datacraftz_mobile/views/screen/fragments/profile_page.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
-import 'package:datacraftz_mobile/views/widgets/notification_badge_bar.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,6 @@ class BasePage extends StatefulWidget {
 }
 
 class _BasePageState extends State<BasePage> {
-  final int _notificationCount = 10;
   static final List<Widget> _widgetOptions = [
     const DashboardFragment(),
     const HistoryPage(),
@@ -27,9 +27,16 @@ class _BasePageState extends State<BasePage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    Provider.of<AuthProvider>(context, listen: false).checkUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer<PageIndexProvider>(
-      builder: (context, pageIndexProvider, child) {
+    return Consumer2<PageIndexProvider, AuthProvider>(
+      builder: (context, pageIndexProvider, authProvider, child) {
+        UserModel? user = authProvider.userModel;
         return Scaffold(
           backgroundColor: lightColor,
           appBar: pageIndexProvider.pageIndex == 2
@@ -47,7 +54,7 @@ class _BasePageState extends State<BasePage> {
                   backgroundColor: lightColor,
                   automaticallyImplyLeading: false,
                   title: Text(
-                    '${greetings()}, Aditya Ibrar Abdillah',
+                    '${greetings()}, ${user?.result?.name ?? 'User'}',
                     style: blackTextStyle.copyWith(
                         fontSize: 16, fontWeight: semiBold),
                     maxLines: 1,
@@ -71,18 +78,6 @@ class _BasePageState extends State<BasePage> {
                             ),
                           ),
                         ),
-                        if (_notificationCount > 0)
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: SizedBox(
-                              height: 10,
-                              width: 10,
-                              child: NotificationBadge(
-                                notificationCount: _notificationCount,
-                              ),
-                            ),
-                          ),
                       ],
                     ),
                     SizedBox(

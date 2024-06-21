@@ -1,5 +1,6 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/views/screen/page/payment_ticket_page.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
 import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/custom_container.dart';
@@ -412,7 +413,9 @@ class CheckTicketPage extends StatelessWidget {
         child: CustomFilledButton(
           title: 'Batalkan Perjalanan',
           color: Colors.red,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, PaymentTicketPage.routeName);
+          },
         ),
       ),
     );

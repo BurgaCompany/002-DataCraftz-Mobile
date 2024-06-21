@@ -11,6 +11,11 @@ class AuthProvider extends ChangeNotifier {
   UserModel? get userModel => _userModel;
   bool isLoading = false;
 
+  Future<void> checkUser() async {
+    _userModel = await Session.getUser();
+    notifyListeners();
+  }
+
   Future<dynamic> authLogin(String email, String password) async {
     isLoading = true;
     try {

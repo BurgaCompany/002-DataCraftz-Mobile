@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String getDayOfWeek(int day) {
   String dayOfWeek;
 
@@ -92,4 +94,22 @@ String greetings() {
 
 String createDataBill(String input) {
   return input.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+}
+
+
+String formatCurrency(int value) {
+    final formatter = NumberFormat("#,###");
+    return 'Rp${formatter.format(value)}';
+  }
+
+  Map<String, String> splitName(String fullName) {
+  List<String> nameParts = fullName.split(' ');
+
+  String firstName = nameParts.first;
+  String lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+
+  return {
+    'firstName': firstName,
+    'lastName': lastName,
+  };
 }

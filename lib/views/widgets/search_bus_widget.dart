@@ -1,15 +1,21 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
-import 'package:datacraftz_mobile/core/provider/bus_provider.dart';
+import 'package:datacraftz_mobile/core/model/station_model.dart';
+import 'package:datacraftz_mobile/core/provider/station_provider.dart';
 import 'package:datacraftz_mobile/views/screen/page/go_station_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/to_station_page.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
+import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/custom_button_widget.dart';
+import 'package:datacraftz_mobile/views/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 
 class SearchBusWidget extends StatefulWidget {
+  final ValueChanged<int>? onValueChanged;
   const SearchBusWidget({
     super.key,
+    this.onValueChanged,
   });
 
   @override
@@ -19,6 +25,37 @@ class SearchBusWidget extends StatefulWidget {
 class _SearchBusWidgetState extends State<SearchBusWidget> {
   DateTime? dateNow;
   String _selectedDate = '';
+  String? _selectedDates;
+  String _fromStationCode = 'BWS';
+  String _fromStationName = 'Terminal Bondowoso';
+
+  String _toStationCode = 'SBY';
+  String _toStationName = 'Terminal Surabaya';
+
+  int? _idFromStation;
+  int? _idToStation;
+  int _currentValue = 1;
+
+  void searchBus() {
+    if (_idFromStation == null ||
+        _idToStation == null ||
+        _selectedDates == null) {
+      const CustomSnackBar(
+        message: 'Silahkan cari tempat tujuan',
+        type: SnackBarType.warning,
+      ).show(context);
+      return;
+    } else if (_idFromStation == _idToStation) {
+      const CustomSnackBar(
+        message: 'Tempat tujuan tidak boleh sama',
+        type: SnackBarType.warning,
+      ).show(context);
+      return;
+    } else {
+      context.read<StationProvider>().searchSchedule(_idToStation.toString(),
+          _idFromStation.toString(), _selectedDates.toString());
+    }
+  }
 
   @override
   void initState() {
@@ -26,6 +63,7 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
     dateNow = DateTime.now();
     _selectedDate =
         '${getDayOfWeek(dateNow!.weekday)}, ${dateNow!.day} ${getMonth(dateNow!.month)} ${dateNow!.year}';
+    _selectedDates = '${dateNow!.year}-${dateNow!.month}-${dateNow!.day}';
   }
 
   void _pickDate(BuildContext context) async {
@@ -46,6 +84,13 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
     }
   }
 
+  void updateCurrentValue(int value) {
+    setState(() {
+      _currentValue = value;
+    });
+    widget.onValueChanged!(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,7 +106,20 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, GoStationPage.routeName);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GoStationPage(
+                          onStationSelected: (DataStation station) {
+                            setState(() {
+                              _fromStationCode = station.codeName!;
+                              _fromStationName = station.name!;
+                              _idFromStation = station.id!;
+                            });
+                          },
+                        ),
+                      ),
+                    );
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,14 +132,14 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
                         ),
                       ),
                       Text(
-                        'BWS',
+                        _fromStationCode,
                         style: blackTextStyle.copyWith(
                           fontSize: 14,
                           fontWeight: semiBold,
                         ),
                       ),
                       Text(
-                        'Terminal Bondowoso',
+                        _fromStationName,
                         style: greyTextStyle.copyWith(
                           fontSize: 14,
                           fontWeight: semiBold,
@@ -100,7 +158,20 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, ToStationPage.routeName);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ToStationPage(
+                          toStationSelected: (DataStation station) {
+                            setState(() {
+                              _toStationCode = station.codeName!;
+                              _toStationName = station.name!;
+                              _idToStation = station.id!;
+                            });
+                          },
+                        ),
+                      ),
+                    );
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -113,14 +184,14 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
                         ),
                       ),
                       Text(
-                        'SBY',
+                        _toStationCode,
                         style: blackTextStyle.copyWith(
                           fontSize: 14,
                           fontWeight: semiBold,
                         ),
                       ),
                       Text(
-                        'Terminal Bondowoso',
+                        _toStationName,
                         style: greyTextStyle.copyWith(
                           fontSize: 14,
                           fontWeight: semiBold,
@@ -165,53 +236,93 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
                 ),
               ),
               Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      'Penumpang',
-                      style: greyTextStyle.copyWith(
-                        fontSize: 12,
-                        fontWeight: bold,
-                      ),
-                    ),
-                    Consumer<BusProvider>(
-                      builder: (context, busProvider, child) {
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                busProvider.removePassenger();
-                              },
-                              icon: const Icon(
-                                Icons.remove,
-                                size: 22,
-                                color: Colors.red,
+                child: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet<int>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return StatefulBuilder(
+                          builder: (BuildContext context,
+                              StateSetter setModalState) {
+                            return SizedBox(
+                              height: 280,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20.0),
+                                    topRight: Radius.circular(20.0),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Jumlah Penumpang',
+                                          style: blackTextStyle.copyWith(
+                                            fontSize: 20,
+                                            fontWeight: bold,
+                                          ),
+                                        ),
+                                        NumberPicker(
+                                          textStyle: greyTextStyle.copyWith(
+                                            fontSize: 16,
+                                            fontWeight: medium,
+                                          ),
+                                          selectedTextStyle:
+                                              primaryTextStyle.copyWith(
+                                            fontSize: 24,
+                                            fontWeight: bold,
+                                          ),
+                                          value: _currentValue,
+                                          minValue: 1,
+                                          maxValue: 10,
+                                          onChanged: (value) {
+                                            setModalState(
+                                              () {
+                                                _currentValue = value;
+                                              },
+                                            );
+                                          },
+                                        ),
+                                        CustomFilledButton(
+                                          title: 'Oke',
+                                          onPressed: () {
+                                            updateCurrentValue(_currentValue);
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                            Text(
-                              busProvider.passengers.toString(),
-                              style: blackTextStyle.copyWith(
-                                fontSize: 14,
-                                fontWeight: bold,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                busProvider.addPassenger();
-                              },
-                              icon: const Icon(
-                                Icons.add,
-                                size: 22,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
+                            );
+                          },
                         );
                       },
-                    )
-                  ],
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Text(
+                        'Penumpang',
+                        style: greyTextStyle.copyWith(
+                          fontSize: 12,
+                          fontWeight: bold,
+                        ),
+                      ),
+                      Text(
+                        _currentValue.toString(),
+                        style: blackTextStyle.copyWith(
+                          fontSize: 14,
+                          fontWeight: bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -219,7 +330,9 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
           const SizedBox(height: 16),
           CustomButton(
             title: 'Cari Bus',
-            onPressed: () {},
+            onPressed: () {
+              searchBus();
+            },
           ),
         ],
       ),

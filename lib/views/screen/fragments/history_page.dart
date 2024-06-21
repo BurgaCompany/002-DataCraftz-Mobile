@@ -1,6 +1,6 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/provider/page_switcher_provider.dart';
-import 'package:datacraftz_mobile/views/screen/page/check_tikcet.dart';
+import 'package:datacraftz_mobile/views/screen/page/check_ticket.dart';
 import 'package:datacraftz_mobile/views/widgets/booking_terminal_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/terminal_widget.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +116,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     itemCount: 4,
                     itemBuilder: (context, index) {
                       return TerminalWidget(
-                        title: 'Lihat',
+                        titleButton: 'Lihat',
                         onTap: () {},
                       );
                     },
