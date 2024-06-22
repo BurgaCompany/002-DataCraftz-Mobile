@@ -1,22 +1,20 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
-import 'package:datacraftz_mobile/core/model/history_goon_model.dart';
-import 'package:datacraftz_mobile/views/screen/page/payment_ticket_page.dart';
+import 'package:datacraftz_mobile/core/model/history_done_model.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
-import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/custom_container.dart';
 import 'package:datacraftz_mobile/views/widgets/line_bus_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/tear_effect.dart';
 import 'package:flutter/material.dart';
 
-class CheckTicketPage extends StatelessWidget {
-  static const String routeName = '/check-ticket-page';
-  const CheckTicketPage({super.key});
+class CheckTicketDonePage extends StatelessWidget {
+  static const String routeName = '/check-ticket-done-page';
+  const CheckTicketDonePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final data =
-        ModalRoute.of(context)!.settings.arguments as DataReservationGoon;
+        ModalRoute.of(context)!.settings.arguments as DataReservationDone;
 
     final dateReservation = DateTime.parse(data.dateDeparture.toString());
     final dateDeparture =
@@ -27,7 +25,7 @@ class CheckTicketPage extends StatelessWidget {
         iconTheme: IconThemeData(color: whiteColor),
         backgroundColor: primaryColor,
         title: Text(
-          'Tiket Berlangsung',
+          'Tiket Selesai',
           style: whiteTextStyle.copyWith(
             fontSize: 18,
             fontWeight: medium,
@@ -59,7 +57,8 @@ class CheckTicketPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  padding:
+                      const EdgeInsets.only(right: 30, left: 30, bottom: 30),
                   child: Column(
                     children: [
                       ClipPath(
@@ -416,16 +415,6 @@ class CheckTicketPage extends StatelessWidget {
             ),
           )
         ],
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(20),
-        child: CustomFilledButton(
-          title: 'Batalkan Perjalanan',
-          color: Colors.red,
-          onPressed: () {
-            Navigator.pushNamed(context, PaymentTicketPage.routeName);
-          },
-        ),
       ),
     );
   }

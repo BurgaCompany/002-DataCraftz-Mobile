@@ -1,8 +1,11 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/provider/page_switcher_provider.dart';
+import 'package:datacraftz_mobile/core/provider/user_schedule_provider.dart';
 import 'package:datacraftz_mobile/views/screen/page/check_ticket.dart';
+import 'package:datacraftz_mobile/views/screen/page/check_ticket_done_page.dart';
+import 'package:datacraftz_mobile/views/widgets/booking_done_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/booking_terminal_widget.dart';
-import 'package:datacraftz_mobile/views/widgets/terminal_widget.dart';
+import 'package:datacraftz_mobile/views/widgets/shimmer_effect_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +17,18 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  @override
+  void initState() {
+    super.initState();
+    UserScheduleProvider userScheduleProvider =
+        Provider.of<UserScheduleProvider>(context, listen: false);
+    if (userScheduleProvider.historyGoon == null &&
+        userScheduleProvider.historyDone == null) {
+      userScheduleProvider.getHistoryGoon();
+      userScheduleProvider.getHistoryDone();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<PageIndexProvider>(
@@ -95,30 +110,112 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
                 SizedBox(height: DevicesSettings.getHeigth(context) / 54),
                 if (pageIndexProvider.tabIndex == 0)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 2,
-                    itemBuilder: (context, index) {
-                      return BookingTerminalWidget(
-                        title: 'Lihat',
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, CheckTicketPage.routeName);
-                        },
-                      );
+                  Consumer<UserScheduleProvider>(
+                    builder: (context, userScheduleProvider, child) {
+                      if (userScheduleProvider.isLoading) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return const HistoryLoading();
+                          },
+                        );
+                      }
+                      if (userScheduleProvider.historyGoon == null) {
+                        return Center(
+                          child: Text(
+                            'Anda masih belum melakukan Pembelian tiket',
+                            style: blackTextStyle.copyWith(
+                              fontSize: 20,
+                              fontWeight: semiBold,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: userScheduleProvider.historyGoon!.length,
+                          itemBuilder: (context, index) {
+                            final dataHistoryGoon =
+                                userScheduleProvider.historyGoon![index];
+                            return BookingTerminalWidget(
+                              titleButton: 'Lihat',
+                              title: dataHistoryGoon.scheduleFromStation,
+                              status: dataHistoryGoon.statusBus,
+                              fromCodeName:
+                                  dataHistoryGoon.scheduleFromStationCodeName,
+                              timeStart: dataHistoryGoon.scheduleTimeStart,
+                              busClass: dataHistoryGoon.busClass,
+                              timeArrive: dataHistoryGoon.scheduleTimeArrive,
+                              duration: dataHistoryGoon.schedulePwt,
+                              price: dataHistoryGoon.schedulePrice.toString(),
+                              toCodeName:
+                                  dataHistoryGoon.scheduleToStationCodeName,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, CheckTicketPage.routeName,
+                                    arguments: dataHistoryGoon);
+                              },
+                            );
+                          },
+                        );
+                      }
                     },
                   )
                 else
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return TerminalWidget(
-                        titleButton: 'Lihat',
-                        onTap: () {},
-                      );
+                  Consumer<UserScheduleProvider>(
+                    builder: (context, userScheduleProvider, child) {
+                      if (userScheduleProvider.isLoading) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return const HistoryLoading();
+                          },
+                        );
+                      }
+                      if (userScheduleProvider.historyDone == null) {
+                        return Center(
+                          child: Text(
+                            'Anda masih belum melakukan Pembelian tiket',
+                            style: blackTextStyle.copyWith(
+                              fontSize: 20,
+                              fontWeight: semiBold,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: userScheduleProvider.historyDone!.length,
+                          itemBuilder: (context, index) {
+                            final dataHistoryDone =
+                                userScheduleProvider.historyDone![index];
+                            return BookingDoneWidget(
+                              titleButton: 'Lihat',
+                              title: dataHistoryDone.scheduleFromStation,
+                              fromCodeName:
+                                  dataHistoryDone.scheduleFromStationCodeName,
+                              timeStart: dataHistoryDone.scheduleTimeStart,
+                              busClass: dataHistoryDone.busClass,
+                              timeArrive: dataHistoryDone.scheduleTimeArrive,
+                              duration: dataHistoryDone.schedulePwt,
+                              price: dataHistoryDone.schedulePrice.toString(),
+                              toCodeName:
+                                  dataHistoryDone.scheduleToStationCodeName,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, CheckTicketDonePage.routeName,
+                                    arguments: dataHistoryDone);
+                              },
+                            );
+                          },
+                        );
+                      }
                     },
                   )
               ],

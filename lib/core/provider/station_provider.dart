@@ -5,7 +5,6 @@ import 'package:datacraftz_mobile/constant/api_client.dart';
 import 'package:datacraftz_mobile/core/model/schedule_station_model.dart';
 import 'package:datacraftz_mobile/core/model/station_model.dart';
 import 'package:flutter/material.dart';
-// import 'package:logger/logger.dart';
 
 class StationProvider extends ChangeNotifier {
   List<DataStation>? _dataStation;
@@ -56,6 +55,7 @@ class StationProvider extends ChangeNotifier {
   Future<List<DataSchedule>> searchSchedule(
       String toStation, String fromStation, String date) async {
     isLoading = true;
+    notifyListeners();
     try {
       final response = await ApiClient().get(
           '${ApiUrl.stationScheduleSearch}?from_station=$fromStation&to_station=$toStation&date=$date');

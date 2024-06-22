@@ -2,6 +2,7 @@ import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/provider/station_provider.dart';
 import 'package:datacraftz_mobile/views/screen/page/booking_bill_page.dart';
 import 'package:datacraftz_mobile/views/widgets/search_bus_widget.dart';
+import 'package:datacraftz_mobile/views/widgets/shimmer_effect_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/terminal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,16 @@ class _DashboardFragmentState extends State<DashboardFragment> {
             const SizedBox(height: 16),
             Consumer<StationProvider>(
               builder: (context, stationProvider, child) {
-                if (stationProvider.dataSchedule == null) {
+                if (stationProvider.isLoading) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 3,
+                    itemBuilder: (context, index) {
+                      return const DashboardLoading();
+                    },
+                  );
+                } else if (stationProvider.dataSchedule == null) {
                   return Center(
                     child: Column(
                       children: [
@@ -51,37 +61,38 @@ class _DashboardFragmentState extends State<DashboardFragment> {
                       ],
                     ),
                   );
+                } else {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: stationProvider.dataSchedule!.length,
+                    itemBuilder: (context, index) {
+                      final data = stationProvider.dataSchedule![index];
+                      return TerminalWidget(
+                        titleStation: data.nameStation,
+                        chair: data.chair.toString(),
+                        fromStation: data.fromStation,
+                        toStation: data.toStation,
+                        pwt: data.pwt,
+                        timeStart: data.timeStart,
+                        timeEnd: data.timeArrive,
+                        price: data.price,
+                        typeBus: data.typeBus,
+                        titleButton: 'Pesan',
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            BookingBillPage.routeName,
+                            arguments: {
+                              'schedule': data,
+                              'passengers': _passengers,
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
                 }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: stationProvider.dataSchedule!.length,
-                  itemBuilder: (context, index) {
-                    final data = stationProvider.dataSchedule![index];
-                    return TerminalWidget(
-                      titleStation: data.nameStation,
-                      chair: data.chair.toString(),
-                      fromStation: data.fromStation,
-                      toStation: data.toStation,
-                      pwt: data.pwt,
-                      timeStart: data.timeStart,
-                      timeEnd: data.timeArrive,
-                      price: data.price,
-                      typeBus: data.typeBus,
-                      titleButton: 'Pesan',
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          BookingBillPage.routeName,
-                          arguments: {
-                            'schedule': data,
-                            'passengers': _passengers,
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
               },
             ),
           ],
