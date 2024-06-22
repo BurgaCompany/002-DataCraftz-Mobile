@@ -5,7 +5,7 @@ import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/model/login_model.dart';
 import 'package:datacraftz_mobile/core/model/schedule_station_model.dart';
 import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
-import 'package:datacraftz_mobile/core/provider/user_schedule_providert.dart';
+import 'package:datacraftz_mobile/core/provider/user_schedule_provider.dart';
 import 'package:datacraftz_mobile/views/screen/page/payment_ticket_page.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
 import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
@@ -75,6 +75,8 @@ class _BookingBillPageState extends State<BookingBillPage> {
     final int totalPrice = (station.price ?? 0) * passengers;
     Result? user = Provider.of<AuthProvider>(context).userModel!.result;
     final dateNow = DateTime.now();
+    final dateReservation =
+        '${dateNow.day} ${getMonth(dateNow.month)} ${dateNow.year}';
     final dateDeparture = '${dateNow.year}-${dateNow.month}-${dateNow.day}';
     final generateBarcode = createDataBill(
         '${user!.id}$passengers${dateNow.toString().substring(3, 16)}${station.id}');
@@ -86,7 +88,7 @@ class _BookingBillPageState extends State<BookingBillPage> {
         iconTheme: IconThemeData(color: whiteColor),
         backgroundColor: primaryColor,
         title: Text(
-          'Tiket Berlangsung',
+          'Pembelian Tiket',
           style: whiteTextStyle.copyWith(
             fontSize: 18,
             fontWeight: medium,
@@ -134,7 +136,7 @@ class _BookingBillPageState extends State<BookingBillPage> {
                               child: Column(
                                 children: [
                                   Text(
-                                    '10 September 2024',
+                                    dateReservation,
                                     style: blackTextStyle.copyWith(
                                       fontSize: 18,
                                       fontWeight: semiBold,
@@ -484,31 +486,30 @@ class _BookingBillPageState extends State<BookingBillPage> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(20),
-        child: CustomFilledButton(
-          title: 'Pesan',
-          onPressed: () {
-            payment(
-                context,
-                generateBarcode,
-                totalPrice.toString(),
-                splitNames['firstName'] ?? '',
-                splitNames['lastName'] ?? '',
-                user.id.toString(),
-                station.busId.toString(),
-                station.id.toString(),
-                passengers.toString(),
-                dateDeparture);
-            // context.read<UserScheduleProvider>().bookedTicket(
-            //     generateBarcode,
-            //     totalPrice.toString(),
-            //     splitNames['firstName'] ?? '',
-            //     splitNames['lastName'] ?? '',
-            //     user.id.toString(),
-            //     station.busId.toString(),
-            //     station.id.toString(),
-            //     passengers.toString(),
-            //     dateDeparture);
-            // Navigator.pop(context);
+        child: Consumer<UserScheduleProvider>(
+          builder: (context, userScheduleProvider, child) {
+            if (userScheduleProvider.isLoading) {
+              return CustomFilledButton(
+                title: 'Loading',
+                isLoading: userScheduleProvider.isLoading,
+              );
+            }
+            return CustomFilledButton(
+              title: 'Pesan',
+              onPressed: () {
+                payment(
+                    context,
+                    generateBarcode,
+                    totalPrice.toString(),
+                    splitNames['firstName'] ?? '',
+                    splitNames['lastName'] ?? '',
+                    user.id.toString(),
+                    station.busId.toString(),
+                    station.id.toString(),
+                    passengers.toString(),
+                    dateDeparture);
+              },
+            );
           },
         ),
       ),

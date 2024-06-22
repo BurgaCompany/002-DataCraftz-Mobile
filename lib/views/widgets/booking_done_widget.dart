@@ -3,7 +3,7 @@ import 'package:datacraftz_mobile/views/widgets/custom_button_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/line_bus_widget.dart';
 import 'package:flutter/material.dart';
 
-class BookingTerminalWidget extends StatelessWidget {
+class BookingDoneWidget extends StatelessWidget {
   final String titleButton;
   final String? title,
       fromCodeName,
@@ -12,10 +12,9 @@ class BookingTerminalWidget extends StatelessWidget {
       timeArrive,
       busClass,
       price,
-      duration,
-      status;
+      duration;
   final VoidCallback onTap;
-  const BookingTerminalWidget({
+  const BookingDoneWidget({
     super.key,
     required this.titleButton,
     this.title,
@@ -26,7 +25,6 @@ class BookingTerminalWidget extends StatelessWidget {
     this.busClass,
     this.price,
     this.duration,
-    this.status,
     required this.onTap,
   });
 
@@ -43,31 +41,12 @@ class BookingTerminalWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                title ?? '',
-                style: greyTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: bold,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  status ?? '',
-                  style: whiteTextStyle.copyWith(
-                    fontSize: 12,
-                    fontWeight: semiBold,
-                  ),
-                ),
-              )
-            ],
+          Text(
+            title ?? '',
+            style: greyTextStyle.copyWith(
+              fontSize: 14,
+              fontWeight: bold,
+            ),
           ),
           SizedBox(
             height: DevicesSettings.getHeigth(context) / 54,

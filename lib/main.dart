@@ -3,7 +3,7 @@ import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
 import 'package:datacraftz_mobile/core/provider/page_switcher_provider.dart';
 import 'package:datacraftz_mobile/core/provider/station_provider.dart';
-import 'package:datacraftz_mobile/core/provider/user_schedule_providert.dart';
+import 'package:datacraftz_mobile/core/provider/user_schedule_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';

@@ -57,7 +57,6 @@ class _RegisterPageState extends State<RegisterPage> {
         type: SnackBarType.warning,
       ).show(context);
     } else if (passwordController.text.length < 8) {
-      // Ubah syarat panjang password
       const CustomSnackBar(
         message: 'Password Minimal 8 Karakter',
         type: SnackBarType.warning,

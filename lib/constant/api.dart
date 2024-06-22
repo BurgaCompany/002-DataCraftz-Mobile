@@ -9,4 +9,7 @@ class ApiUrl {
 
   //Booked Ticket
   static const String bookedTicket = "$baseUrl/midtrans-payment-gateway";
+  //History Ticket
+  static const String historyTicketGoon = "$baseUrl/reservation-goon";
+  static const String historyTicketDone = "$baseUrl/reservation-history";
 }
