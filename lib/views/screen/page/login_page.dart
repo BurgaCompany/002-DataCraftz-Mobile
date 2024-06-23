@@ -23,9 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void login() async {
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+  void login(AuthProvider authProvider) async {
     if (emailController.text.isEmpty) {
       const CustomSnackBar(
         message: 'Email Tidak Boleh Kosong',
@@ -109,9 +107,20 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 14,
                     ),
-                    CustomFilledButton(
-                      title: 'Masuk',
-                      onPressed: login,
+                    Consumer<AuthProvider>(
+                      builder: (context, authProvider, child) {
+                        if (authProvider.isLoading) {
+                          return CustomFilledButton(
+                            title: '',
+                            isLoading: authProvider.isLoading,
+                          );
+                        } else {
+                          return CustomFilledButton(
+                            title: 'Masuk',
+                            onPressed: () => login(authProvider),
+                          );
+                        }
+                      },
                     )
                   ],
                 ),
