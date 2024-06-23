@@ -245,7 +245,9 @@ class CheckTicketPage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          data.scheduleTimeArrive ?? '',
+                                          data.scheduleTimeArrive
+                                              .toString()
+                                              .substring(0, 5),
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
