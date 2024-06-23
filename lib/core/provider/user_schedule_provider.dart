@@ -6,7 +6,6 @@ import 'package:datacraftz_mobile/core/model/history_done_model.dart';
 import 'package:datacraftz_mobile/core/model/history_goon_model.dart';
 import 'package:datacraftz_mobile/views/utils/shared_user.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 
 class UserScheduleProvider extends ChangeNotifier {
   List<DataReservationGoon>? _historyGoon;
@@ -57,7 +56,6 @@ class UserScheduleProvider extends ChangeNotifier {
         isLoading = false;
         final responseData =
             json.decode(response.body)['data_reservation'] as List<dynamic>;
-        Logger().t(responseData);
         _historyDone =
             responseData.map((e) => DataReservationDone.fromJson(e)).toList();
         notifyListeners();
@@ -108,5 +106,36 @@ class UserScheduleProvider extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future ratingDriver(String idDriver, String rating, String review) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      final response = await ApiClient().post(
+        '${ApiUrl.ratingDriver}?id=$idDriver',
+        body: {
+          'rating': rating,
+          'review': review,
+        },
+      );
+      if (response.statusCode == 200) {
+        isLoading = false;
+        notifyListeners();
+        return response;
+      } else {
+        isLoading = false;
+        notifyListeners();
+        throw Exception('Failed to rating driver');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future clearHistory() async {
+    _historyDone = null;
+    _historyGoon = null;
+    notifyListeners();
   }
 }
