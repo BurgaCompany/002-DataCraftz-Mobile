@@ -1,6 +1,7 @@
 import 'package:datacraftz_mobile/constant/routes.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
+import 'package:datacraftz_mobile/core/provider/conductor_provider.dart';
 import 'package:datacraftz_mobile/core/provider/page_switcher_provider.dart';
 import 'package:datacraftz_mobile/core/provider/station_provider.dart';
 import 'package:datacraftz_mobile/core/provider/user_schedule_provider.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => AuthProvider()),
               ChangeNotifierProvider(create: (_) => StationProvider()),
               ChangeNotifierProvider(create: (_) => UserScheduleProvider()),
+              ChangeNotifierProvider(create: (_) => ConductorProvider()),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

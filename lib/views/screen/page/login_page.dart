@@ -1,6 +1,7 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
 import 'package:datacraftz_mobile/views/screen/page/base_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/conductor/base_conductor_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/driver/base_page_driver.dart';
 import 'package:datacraftz_mobile/views/screen/page/register_page.dart';
 import 'package:datacraftz_mobile/views/utils/validation.dart';
@@ -49,8 +50,10 @@ class _LoginPageState extends State<LoginPage> {
         final role = response['role'];
         if (role == 'Passenger') {
           Navigator.pushNamed(context, BasePage.routeName);
-        } else {
+        } else if (role == 'Driver') {
           Navigator.pushNamed(context, BaseDriverPage.routeName);
+        } else {
+          Navigator.pushNamed(context, BaseConductorPage.routeName);
         }
       } else {
         if (mounted) {

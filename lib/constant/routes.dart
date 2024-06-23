@@ -2,6 +2,9 @@ import 'package:datacraftz_mobile/views/screen/page/base_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/booking_bill_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/check_ticket.dart';
 import 'package:datacraftz_mobile/views/screen/page/check_ticket_done_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/conductor/base_conductor_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/conductor/check_ticket_conductor_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/conductor/profile_conductor_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/driver/base_page_driver.dart';
 import 'package:datacraftz_mobile/views/screen/page/driver/profile_driver_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/go_station_page.dart';
@@ -28,4 +31,9 @@ dynamic routes = {
   // Driver
   BaseDriverPage.routeName: (context) => const BaseDriverPage(),
   ProfileDriverPage.routeName: (context) => const ProfileDriverPage(),
+  // Conductor
+  ProfileConductorPage.routeName: (context) => const ProfileConductorPage(),
+  BaseConductorPage.routeName: (context) => const BaseConductorPage(),
+  CheckTicketConductorPage.routeName: (context) =>
+      const CheckTicketConductorPage(),
 };
