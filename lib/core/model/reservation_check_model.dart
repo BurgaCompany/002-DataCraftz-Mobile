@@ -1,52 +1,49 @@
 import 'dart:convert';
 
-class DoneScheduleStationModel {
+class ReservationCheckModel {
   int? statusCode;
   String? message;
-  List<DataReservationDone>? dataReservation;
+  DataReservationCheck? dataReservationCheck;
 
-  DoneScheduleStationModel({
+  ReservationCheckModel({
     this.statusCode,
     this.message,
-    this.dataReservation,
+    this.dataReservationCheck,
   });
 
-  DoneScheduleStationModel copyWith({
+  ReservationCheckModel copyWith({
     int? statusCode,
     String? message,
-    List<DataReservationDone>? dataReservation,
+    DataReservationCheck? dataReservationCheck,
   }) =>
-      DoneScheduleStationModel(
+      ReservationCheckModel(
         statusCode: statusCode ?? this.statusCode,
         message: message ?? this.message,
-        dataReservation: dataReservation ?? this.dataReservation,
+        dataReservationCheck: dataReservationCheck ?? this.dataReservationCheck,
       );
 
-  factory DoneScheduleStationModel.fromRawJson(String str) =>
-      DoneScheduleStationModel.fromJson(json.decode(str));
+  factory ReservationCheckModel.fromRawJson(String str) =>
+      ReservationCheckModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory DoneScheduleStationModel.fromJson(Map<String, dynamic> json) =>
-      DoneScheduleStationModel(
+  factory ReservationCheckModel.fromJson(Map<String, dynamic> json) =>
+      ReservationCheckModel(
         statusCode: json["statusCode"],
         message: json["message"],
-        dataReservation: json["data_reservation"] == null
-            ? []
-            : List<DataReservationDone>.from(json["data_reservation"]!
-                .map((x) => DataReservationDone.fromJson(x))),
+        dataReservationCheck: json["data_reservation_check"] == null
+            ? null
+            : DataReservationCheck.fromJson(json["data_reservation_check"]),
       );
 
   Map<String, dynamic> toJson() => {
         "statusCode": statusCode,
         "message": message,
-        "data_reservation": dataReservation == null
-            ? []
-            : List<dynamic>.from(dataReservation!.map((x) => x.toJson())),
+        "data_reservation_check": dataReservationCheck?.toJson(),
       };
 }
 
-class DataReservationDone {
+class DataReservationCheck {
   String? orderId;
   String? userName;
   int? driverId;
@@ -65,7 +62,7 @@ class DataReservationDone {
   String? status;
   String? statusBus;
 
-  DataReservationDone({
+  DataReservationCheck({
     this.orderId,
     this.userName,
     this.driverId,
@@ -85,7 +82,7 @@ class DataReservationDone {
     this.statusBus,
   });
 
-  DataReservationDone copyWith({
+  DataReservationCheck copyWith({
     String? orderId,
     String? userName,
     int? driverId,
@@ -104,7 +101,7 @@ class DataReservationDone {
     String? status,
     String? statusBus,
   }) =>
-      DataReservationDone(
+      DataReservationCheck(
         orderId: orderId ?? this.orderId,
         userName: userName ?? this.userName,
         driverId: driverId ?? this.driverId,
@@ -126,13 +123,13 @@ class DataReservationDone {
         statusBus: statusBus ?? this.statusBus,
       );
 
-  factory DataReservationDone.fromRawJson(String str) =>
-      DataReservationDone.fromJson(json.decode(str));
+  factory DataReservationCheck.fromRawJson(String str) =>
+      DataReservationCheck.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory DataReservationDone.fromJson(Map<String, dynamic> json) =>
-      DataReservationDone(
+  factory DataReservationCheck.fromJson(Map<String, dynamic> json) =>
+      DataReservationCheck(
         orderId: json["order_id"],
         userName: json["user_name"],
         driverId: json["driver_id"],

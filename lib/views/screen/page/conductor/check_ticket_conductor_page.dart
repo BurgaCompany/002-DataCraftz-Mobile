@@ -1,33 +1,66 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
-import 'package:datacraftz_mobile/core/model/history_goon_model.dart';
-import 'package:datacraftz_mobile/views/screen/page/payment_ticket_page.dart';
+import 'package:datacraftz_mobile/core/model/reservation_check_model.dart';
+import 'package:datacraftz_mobile/core/provider/conductor_provider.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
 import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/custom_container.dart';
+import 'package:datacraftz_mobile/views/widgets/custom_snackbar.dart';
 import 'package:datacraftz_mobile/views/widgets/line_bus_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/tear_effect.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class CheckTicketPage extends StatelessWidget {
-  static const String routeName = '/check-ticket-page';
-  const CheckTicketPage({super.key});
+class CheckTicketConductorPage extends StatefulWidget {
+  static const String routeName = '/check-ticket-conductor-page';
+  const CheckTicketConductorPage({super.key});
+
+  @override
+  State<CheckTicketConductorPage> createState() =>
+      _CheckTicketConductorPageState();
+}
+
+class _CheckTicketConductorPageState extends State<CheckTicketConductorPage> {
+  DataReservationCheck? data;
+
+  void updateStatusTicket(
+      ConductorProvider conductorProvider, String orderId) async {
+    final response = await conductorProvider.updateTicket(orderId);
+    if (!mounted) return;
+
+    if (response.statusCode == 200) {
+      const CustomSnackBar(
+              message: 'Tiket Berhasil Digunakan', type: SnackBarType.success)
+          .show(context);
+      Navigator.pop(context);
+    } else {
+      const CustomSnackBar(
+              message: 'Kode Tiket Tidak Ditemukan', type: SnackBarType.error)
+          .show(context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ConductorProvider conductorProvider =
+        Provider.of<ConductorProvider>(context, listen: false);
+    data = conductorProvider.dataReservationCheck;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final data =
-        ModalRoute.of(context)!.settings.arguments as DataReservationGoon;
-
-    final dateReservation = DateTime.parse(data.dateDeparture.toString());
+    final dateReservation = DateTime.parse(data!.dateDeparture.toString());
     final dateDeparture =
         '${dateReservation.day} ${getMonth(dateReservation.month)} ${dateReservation.year}';
+
     return Scaffold(
       backgroundColor: lightColor,
       appBar: AppBar(
         iconTheme: IconThemeData(color: whiteColor),
         backgroundColor: primaryColor,
         title: Text(
-          'Tiket Berlangsung',
+          'Verifikasi Tiket',
           style: whiteTextStyle.copyWith(
             fontSize: 18,
             fontWeight: medium,
@@ -87,7 +120,7 @@ class CheckTicketPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         Text(
-                                          data.scheduleFromStationCodeName ??
+                                          data!.scheduleFromStationCodeName ??
                                               '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 34,
@@ -95,7 +128,7 @@ class CheckTicketPage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          data.scheduleFromStation ?? '',
+                                          data!.scheduleFromStation ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 8,
                                             fontWeight: semiBold,
@@ -122,7 +155,7 @@ class CheckTicketPage extends StatelessWidget {
                                               100,
                                         ),
                                         Text(
-                                          data.schedulePwt ?? '',
+                                          data!.schedulePwt ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 12,
                                             fontWeight: semiBold,
@@ -135,14 +168,14 @@ class CheckTicketPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         Text(
-                                          data.scheduleToStationCodeName ?? '',
+                                          data!.scheduleToStationCodeName ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 34,
                                             fontWeight: bold,
                                           ),
                                         ),
                                         Text(
-                                          data.scheduleToStation ?? '',
+                                          data!.scheduleToStation ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 8,
                                             fontWeight: semiBold,
@@ -176,7 +209,7 @@ class CheckTicketPage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          data.userName ?? '',
+                                          data!.userName ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
@@ -198,7 +231,7 @@ class CheckTicketPage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          data.busClass ?? '',
+                                          data!.busClass ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
@@ -218,7 +251,7 @@ class CheckTicketPage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          data.licensePlateNumber ?? '',
+                                          data!.licensePlateNumber ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
@@ -245,9 +278,7 @@ class CheckTicketPage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          data.scheduleTimeArrive
-                                              .toString()
-                                              .substring(0, 5),
+                                          data!.scheduleTimeArrive ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
@@ -269,7 +300,7 @@ class CheckTicketPage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          data.scheduleToStationCodeName ?? '',
+                                          data!.scheduleToStationCodeName ?? '',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
@@ -291,7 +322,7 @@ class CheckTicketPage extends StatelessWidget {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
-                                          '${data.ticketsBooked} Orang',
+                                          '${data!.ticketsBooked} Orang',
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
@@ -317,7 +348,7 @@ class CheckTicketPage extends StatelessWidget {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        '${data.ticketsBooked} Kursi',
+                                        '${data!.ticketsBooked} Kursi',
                                         style: blackTextStyle.copyWith(
                                           fontSize: 16,
                                           fontWeight: semiBold,
@@ -337,7 +368,7 @@ class CheckTicketPage extends StatelessWidget {
                                         ),
                                         Text(
                                           formatCurrency(
-                                              data.schedulePrice ?? 0),
+                                              data!.schedulePrice ?? 0),
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
@@ -352,7 +383,7 @@ class CheckTicketPage extends StatelessWidget {
                                 height: DevicesSettings.getHeigth(context) / 54,
                               ),
                               BarcodeWidget(
-                                data: data.orderId ?? '',
+                                data: data!.orderId.toString(),
                                 barcode: Barcode.code128(),
                                 style: blackTextStyle.copyWith(
                                   fontSize: 18,
@@ -421,11 +452,32 @@ class CheckTicketPage extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(20),
-        child: CustomFilledButton(
-          title: 'Batalkan Perjalanan',
-          color: Colors.red,
-          onPressed: () {
-            Navigator.pushNamed(context, PaymentTicketPage.routeName);
+        child: Consumer<ConductorProvider>(
+          builder: (context, conductorProvider, child) {
+            if (conductorProvider.isLoading) {
+              return CustomFilledButton(
+                title: 'Loading',
+                isLoading: conductorProvider.isLoading,
+              );
+            } else if (data!.status == 'Selesai') {
+              return CustomFilledButton(
+                color: Colors.grey,
+                title: 'Tiket Sudah Digunakan',
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              );
+            } else {
+              return CustomFilledButton(
+                title: 'Pakai Tiket',
+                onPressed: () async {
+                  updateStatusTicket(
+                    conductorProvider,
+                    data!.orderId.toString(),
+                  );
+                },
+              );
+            }
           },
         ),
       ),

@@ -1,6 +1,9 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/core/provider/user_schedule_provider.dart';
 import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
+import 'package:datacraftz_mobile/views/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RatingDriverPage extends StatefulWidget {
   static const String routeName = '/rating-driver-page';
@@ -12,6 +15,28 @@ class RatingDriverPage extends StatefulWidget {
 
 class _RatingDriverPageState extends State<RatingDriverPage> {
   double _rating = 0.0;
+  final TextEditingController _reviewController = TextEditingController();
+
+  void postRating(UserScheduleProvider userScheduleProvider, String driverId,
+      String rating, String review) async {
+    final response =
+        await userScheduleProvider.ratingDriver(driverId, rating, review);
+
+    if (!mounted) return;
+
+    if (response.statusCode == 200) {
+      const CustomSnackBar(
+        message: 'Penilaian Supir berhasil disimpan',
+        type: SnackBarType.success,
+      ).show(context);
+      Navigator.pop(context);
+    } else {
+      const CustomSnackBar(
+        message: 'Penilaian Supir gagal disimpan',
+        type: SnackBarType.error,
+      ).show(context);
+    }
+  }
 
   void _updateRating(double rating) {
     setState(() {
@@ -21,6 +46,7 @@ class _RatingDriverPageState extends State<RatingDriverPage> {
 
   @override
   Widget build(BuildContext context) {
+    int driverId = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
       backgroundColor: lightColor,
       appBar: AppBar(
@@ -50,21 +76,35 @@ class _RatingDriverPageState extends State<RatingDriverPage> {
               ),
             ),
             const SizedBox(height: 20),
-            _buildReviewField(),
+            _buildReviewField(_reviewController),
           ],
         ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(20),
-        child: CustomFilledButton(
-          title: 'Beri Nilai',
-          onPressed: () {},
+        child: Consumer<UserScheduleProvider>(
+          builder: (context, userScheduleProvider, child) {
+            if (userScheduleProvider.isLoading) {
+              return CustomFilledButton(
+                title: '',
+                isLoading: userScheduleProvider.isLoading,
+              );
+            } else {
+              return CustomFilledButton(
+                title: 'Beri Nilai',
+                onPressed: () async {
+                  postRating(userScheduleProvider, driverId.toString(),
+                      _rating.toString(), _reviewController.text);
+                },
+              );
+            }
+          },
         ),
       ),
     );
   }
 
-  Widget _buildReviewField() {
+  Widget _buildReviewField(TextEditingController controller) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -86,6 +126,7 @@ class _RatingDriverPageState extends State<RatingDriverPage> {
           TextField(
             style: greyTextStyle.copyWith(fontSize: 14),
             maxLines: 5,
+            controller: controller,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -115,7 +156,7 @@ class _RatingBarState extends State<RatingBar> {
     setState(() {
       _rating = rating;
     });
-    widget.onRatingSelected(_rating); 
+    widget.onRatingSelected(_rating);
   }
 
   @override

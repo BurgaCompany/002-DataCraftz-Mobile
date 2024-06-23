@@ -1,7 +1,9 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/model/history_done_model.dart';
+import 'package:datacraftz_mobile/views/screen/page/rating_driver_page.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
+import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/custom_container.dart';
 import 'package:datacraftz_mobile/views/widgets/line_bus_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/tear_effect.dart';
@@ -57,8 +59,7 @@ class CheckTicketDonePage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(right: 30, left: 30, bottom: 30),
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
                     children: [
                       ClipPath(
@@ -244,7 +245,9 @@ class CheckTicketDonePage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          data.scheduleTimeArrive ?? '',
+                                          data.scheduleTimeArrive
+                                              .toString()
+                                              .substring(0, 5),
                                           style: blackTextStyle.copyWith(
                                             fontSize: 16,
                                             fontWeight: semiBold,
@@ -415,6 +418,16 @@ class CheckTicketDonePage extends StatelessWidget {
             ),
           )
         ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(20),
+        child: CustomFilledButton(
+          title: 'Beri Nilai',
+          onPressed: () {
+            Navigator.pushNamed(context, RatingDriverPage.routeName,
+                arguments: data.driverId);
+          },
+        ),
       ),
     );
   }

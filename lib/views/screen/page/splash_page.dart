@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/views/screen/page/base_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/conductor/base_conductor_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/driver/base_page_driver.dart';
 import 'package:datacraftz_mobile/views/screen/page/login_page.dart';
 import 'package:datacraftz_mobile/views/utils/shared_user.dart';
@@ -32,8 +33,10 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     if (userModel != null && mounted) {
       if (userModel.role == 'Passenger') {
         Navigator.pushReplacementNamed(context, BasePage.routeName);
-      } else {
+      } else if (userModel.role == 'Driver') {
         Navigator.pushReplacementNamed(context, BaseDriverPage.routeName);
+      } else {
+        Navigator.pushReplacementNamed(context, BaseConductorPage.routeName);
       }
     } else {
       if (mounted) {

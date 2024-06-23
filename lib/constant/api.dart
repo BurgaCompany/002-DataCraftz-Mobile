@@ -6,10 +6,13 @@ class ApiUrl {
   //Station
   static const String station = "$baseUrl/station";
   static const String stationScheduleSearch = "$baseUrl/schedules/find";
-
   //Booked Ticket
   static const String bookedTicket = "$baseUrl/midtrans-payment-gateway";
   //History Ticket
   static const String historyTicketGoon = "$baseUrl/reservation-goon";
   static const String historyTicketDone = "$baseUrl/reservation-history";
+  static const String ratingDriver = "$baseUrl/review-rating";
+  //Conductor
+  static const String checkTicket = "$baseUrl/scan/conductor";
+  static const String updateTicket = "$baseUrl/check/update";
 }
