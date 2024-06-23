@@ -23,9 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void register() async {
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+  void register(AuthProvider authProvider) async {
     if (nameController.text.isEmpty) {
       const CustomSnackBar(
         message: 'Nama Tidak Boleh Kosong',
@@ -101,13 +99,18 @@ class _RegisterPageState extends State<RegisterPage> {
                 width: DevicesSettings.getWidth(context) / 1.2,
               ),
               SizedBox(height: DevicesSettings.getHeigth(context) / 40),
-              RegisterForm(
-                nameController: nameController,
-                emailController: emailController,
-                numberController: numberController,
-                addressController: addressController,
-                passwordController: passwordController,
-                onRegister: register,
+              Consumer<AuthProvider>(
+                builder: (context, authProvider, child) {
+                  return RegisterForm(
+                    nameController: nameController,
+                    emailController: emailController,
+                    numberController: numberController,
+                    addressController: addressController,
+                    passwordController: passwordController,
+                    onRegister: () => register(authProvider),
+                    isLoading: authProvider.isLoading,
+                  );
+                },
               ),
               SizedBox(height: DevicesSettings.getHeigth(context) / 100),
               GestureDetector(
@@ -143,6 +146,7 @@ class RegisterForm extends StatelessWidget {
   final TextEditingController addressController;
   final TextEditingController passwordController;
   final VoidCallback onRegister;
+  final bool isLoading;
 
   const RegisterForm({
     super.key,
@@ -152,6 +156,7 @@ class RegisterForm extends StatelessWidget {
     required this.addressController,
     required this.passwordController,
     required this.onRegister,
+    required this.isLoading,
   });
 
   @override
@@ -182,7 +187,15 @@ class RegisterForm extends StatelessWidget {
             textInputType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 14),
-          CustomFilledButton(title: 'Daftar', onPressed: onRegister),
+          isLoading
+              ? CustomFilledButton(
+                  title: '',
+                  isLoading: isLoading,
+                )
+              : CustomFilledButton(
+                  title: 'Daftar',
+                  onPressed: onRegister,
+                ),
         ],
       ),
     );

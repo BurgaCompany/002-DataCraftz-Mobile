@@ -18,6 +18,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<dynamic> authLogin(String email, String password) async {
     isLoading = true;
+    notifyListeners();
     try {
       final response = await ApiClient().post(
         ApiUrl.login,
@@ -51,6 +52,7 @@ class AuthProvider extends ChangeNotifier {
     String phone,
   ) async {
     isLoading = true;
+    notifyListeners();
     try {
       final response = await ApiClient().post(
         ApiUrl.register,

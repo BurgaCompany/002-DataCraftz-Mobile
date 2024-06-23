@@ -24,8 +24,8 @@ class _HistoryPageState extends State<HistoryPage> {
     super.initState();
     UserScheduleProvider userScheduleProvider =
         Provider.of<UserScheduleProvider>(context, listen: false);
-    if (userScheduleProvider.historyGoon == null &&
-        userScheduleProvider.historyDone == null) {
+    if (userScheduleProvider.historyGoon.isEmpty &&
+        userScheduleProvider.historyDone.isEmpty) {
       userScheduleProvider.getHistoryGoon();
       userScheduleProvider.getHistoryDone();
     }
@@ -135,7 +135,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             },
                           );
                         }
-                        if (userScheduleProvider.historyGoon == null) {
+                        if (userScheduleProvider.historyGoon.isEmpty) {
                           return Center(
                             child: Text(
                               'Anda masih belum melakukan Pembelian tiket',
@@ -149,10 +149,10 @@ class _HistoryPageState extends State<HistoryPage> {
                           return ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: userScheduleProvider.historyGoon!.length,
+                            itemCount: userScheduleProvider.historyGoon.length,
                             itemBuilder: (context, index) {
                               final dataHistoryGoon =
-                                  userScheduleProvider.historyGoon![index];
+                                  userScheduleProvider.historyGoon[index];
                               return BookingTerminalWidget(
                                 titleButton: 'Lihat',
                                 title: dataHistoryGoon.scheduleFromStation,
@@ -190,7 +190,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             },
                           );
                         }
-                        if (userScheduleProvider.historyDone == null) {
+                        if (userScheduleProvider.historyDone.isEmpty) {
                           return Center(
                             child: Text(
                               'Anda masih belum melakukan Pembelian tiket',
@@ -204,10 +204,10 @@ class _HistoryPageState extends State<HistoryPage> {
                           return ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: userScheduleProvider.historyDone!.length,
+                            itemCount: userScheduleProvider.historyDone.length,
                             itemBuilder: (context, index) {
                               final dataHistoryDone =
-                                  userScheduleProvider.historyDone![index];
+                                  userScheduleProvider.historyDone[index];
                               return BookingDoneWidget(
                                 titleButton: 'Lihat',
                                 title: dataHistoryDone.scheduleFromStation,

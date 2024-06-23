@@ -8,10 +8,10 @@ import 'package:datacraftz_mobile/views/utils/shared_user.dart';
 import 'package:flutter/material.dart';
 
 class UserScheduleProvider extends ChangeNotifier {
-  List<DataReservationGoon>? _historyGoon;
-  List<DataReservationGoon>? get historyGoon => _historyGoon;
-  List<DataReservationDone>? _historyDone;
-  List<DataReservationDone>? get historyDone => _historyDone;
+  List<DataReservationGoon> _historyGoon = [];
+  List<DataReservationGoon> get historyGoon => _historyGoon;
+  List<DataReservationDone> _historyDone = [];
+  List<DataReservationDone> get historyDone => _historyDone;
   String? _userId;
   bool isLoading = false;
 
@@ -35,7 +35,12 @@ class UserScheduleProvider extends ChangeNotifier {
         _historyGoon =
             responseData.map((e) => DataReservationGoon.fromJson(e)).toList();
         notifyListeners();
-        return _historyGoon!;
+        return _historyGoon;
+      } else if (response.statusCode == 404) {
+        isLoading = false;
+        _historyGoon = [];
+        notifyListeners();
+        return _historyGoon;
       } else {
         isLoading = false;
         throw Exception('Failed to load history goon');
@@ -59,7 +64,12 @@ class UserScheduleProvider extends ChangeNotifier {
         _historyDone =
             responseData.map((e) => DataReservationDone.fromJson(e)).toList();
         notifyListeners();
-        return _historyDone!;
+        return _historyDone;
+      } else if (response.statusCode == 404) {
+        isLoading = false;
+        _historyDone = [];
+        notifyListeners();
+        return _historyDone;
       } else {
         isLoading = false;
         throw Exception('Failed to load history done');
@@ -134,8 +144,8 @@ class UserScheduleProvider extends ChangeNotifier {
   }
 
   Future clearHistory() async {
-    _historyDone = null;
-    _historyGoon = null;
+    _historyDone = [];
+    _historyGoon = [];
     notifyListeners();
   }
 }
