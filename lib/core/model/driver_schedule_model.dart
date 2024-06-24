@@ -47,6 +47,7 @@ class DataScheduleDriver {
     String? driverName;
     int? chair;
     String? platNumber;
+    DateTime? updatedBus;
     String? nameStation;
     String? toNameStation;
     String? latitudeTo;
@@ -68,6 +69,7 @@ class DataScheduleDriver {
         this.driverName,
         this.chair,
         this.platNumber,
+        this.updatedBus,
         this.nameStation,
         this.toNameStation,
         this.latitudeTo,
@@ -90,6 +92,7 @@ class DataScheduleDriver {
         String? driverName,
         int? chair,
         String? platNumber,
+        DateTime? updatedBus,
         String? nameStation,
         String? toNameStation,
         String? latitudeTo,
@@ -111,6 +114,7 @@ class DataScheduleDriver {
             driverName: driverName ?? this.driverName,
             chair: chair ?? this.chair,
             platNumber: platNumber ?? this.platNumber,
+            updatedBus: updatedBus ?? this.updatedBus,
             nameStation: nameStation ?? this.nameStation,
             toNameStation: toNameStation ?? this.toNameStation,
             latitudeTo: latitudeTo ?? this.latitudeTo,
@@ -137,6 +141,7 @@ class DataScheduleDriver {
         driverName: json["driver_name"],
         chair: json["chair"],
         platNumber: json["plat_number"],
+        updatedBus: json["updated_bus"] == null ? null : DateTime.parse(json["updated_bus"]),
         nameStation: json["name_station"],
         toNameStation: json["to_name_station"],
         latitudeTo: json["latitude_to"],
@@ -159,6 +164,7 @@ class DataScheduleDriver {
         "driver_name": driverName,
         "chair": chair,
         "plat_number": platNumber,
+        "updated_bus": updatedBus?.toIso8601String(),
         "name_station": nameStation,
         "to_name_station": toNameStation,
         "latitude_to": latitudeTo,

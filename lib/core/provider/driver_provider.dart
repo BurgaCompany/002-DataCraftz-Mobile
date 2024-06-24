@@ -47,14 +47,13 @@ class DriverProvider extends ChangeNotifier {
     }
   }
 
-  Future updateStatusBus(String id, String status, String date) async {
+  Future updateStatusBus(String id, String status) async {
     isLoading = true;
     notifyListeners();
     try {
       final response = await ApiClient().post(ApiUrl.updateStatusBus, body: {
-        'schedule_id': id,
+        'bus_id': id,
         'status': status,
-        'date': date,
       });
       if (response.statusCode == 200) {
         isLoading = false;
