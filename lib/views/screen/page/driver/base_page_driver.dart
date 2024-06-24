@@ -1,181 +1,231 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/core/model/login_model.dart';
+import 'package:datacraftz_mobile/core/provider/driver_provider.dart';
 import 'package:datacraftz_mobile/views/screen/page/driver/profile_driver_page.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
-import 'package:datacraftz_mobile/views/widgets/custom_button_widget.dart';
-import 'package:datacraftz_mobile/views/widgets/line_bus_widget.dart';
+import 'package:datacraftz_mobile/views/utils/shared_user.dart';
+import 'package:datacraftz_mobile/views/utils/validation_location.dart';
+import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
+import 'package:datacraftz_mobile/views/widgets/custom_snackbar.dart';
+import 'package:datacraftz_mobile/views/widgets/schedule_driver_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class BaseDriverPage extends StatelessWidget {
+class BaseDriverPage extends StatefulWidget {
   static const String routeName = '/base-driver-page';
   const BaseDriverPage({super.key});
+
+  @override
+  State<BaseDriverPage> createState() => _BaseDriverPageState();
+}
+
+class _BaseDriverPageState extends State<BaseDriverPage> {
+  UserModel? _userModel;
+  String? selectedValue;
+  DateTime? dateNow;
+  String? dateUpdate;
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+    Provider.of<DriverProvider>(context, listen: false).getListSchedule();
+    final date = DateTime.now();
+    setState(() {
+      dateNow = date;
+      dateUpdate = '${date.year}-${date.month}-${date.day}';
+    });
+  }
+
+  Future<void> loadUser() async {
+    UserModel? userModel = await Session.getUser();
+    setState(() {
+      _userModel = userModel;
+    });
+  }
+
+  void updateStatus(DriverProvider driverProvider, String id, String status,
+      String date) async {
+    final response = await driverProvider.updateStatusBus(id, status, date);
+    if (response.statusCode == 200 && mounted) {
+      Navigator.pop(context);
+      const CustomSnackBar(
+              message: 'Status Jadwal Bus Berhasil Diperbarui',
+              type: SnackBarType.success)
+          .show(context);
+    } else {
+      if (mounted) {
+        const CustomSnackBar(
+                message: 'Status Jadwal Bus Berhasil Diperbarui',
+                type: SnackBarType.success)
+            .show(context);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: lightColor,
-      appBar: AppBar(
-        backgroundColor: lightColor,
-        automaticallyImplyLeading: false,
-        title: Text(
-          '${greetings()}, Aditya Ibrar Abdillah',
-          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, ProfileDriverPage.routeName);
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: Image.asset(
-                'assets/img_person.jpg',
-                width: 40,
-                height: 40,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: DevicesSettings.getWidth(context) / 25,
-          )
-        ],
-      ),
+      appBar: _buildAppBar(context),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: ListView.builder(
-          itemCount: 5,
-          itemBuilder: (context, index) {
+        child: Consumer<DriverProvider>(
+          builder: (context, driverProvider, child) {
+            return _buildBody(driverProvider);
+          },
+        ),
+      ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: lightColor,
+      automaticallyImplyLeading: false,
+      title: Text(
+        '${greetings()}, ${_userModel?.result?.name ?? 'User'}',
+        style: blackTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      actions: [
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, ProfileDriverPage.routeName);
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: Image.asset(
+              'assets/img_person.jpg',
+              width: 40,
+              height: 40,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: DevicesSettings.getWidth(context) / 25,
+        )
+      ],
+    );
+  }
+
+  Widget _buildBody(DriverProvider driverProvider) {
+    if (driverProvider.isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (driverProvider.dataScheduleDriver.isEmpty) {
+      return const Center(
+        child: Text('Data Kosong'),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: driverProvider.dataScheduleDriver.length,
+        itemBuilder: (context, index) {
+          final scheduleDriver = driverProvider.dataScheduleDriver[index];
+          return ScheduleDriverWidget(
+            titleStation: scheduleDriver.nameStation,
+            fromCodeName: scheduleDriver.fromStation,
+            toCodeName: scheduleDriver.toStation,
+            duration: scheduleDriver.pwt,
+            timeStart: scheduleDriver.timeStart,
+            timeArrive: scheduleDriver.timeArrive,
+            busClass: scheduleDriver.typeBus,
+            titleButton: 'Status',
+            onPressed: () => _onStatusButtonPressed(context, scheduleDriver),
+          );
+        },
+      );
+    }
+  }
+
+  void _onStatusButtonPressed(BuildContext context, var scheduleDriver) async {
+    bool withinRadius = await isWithinRadius(
+      double.tryParse(scheduleDriver.latitudeTo ?? '0.0') ?? 0.0,
+      double.tryParse(scheduleDriver.longitudeTo ?? '0.0') ?? 0.0,
+      100.0,
+    );
+
+    List<String> options = ['Belum Berangkat', 'Berangkat', 'Terkendala'];
+
+    if (withinRadius) {
+      options.add('Selesai');
+    }
+    _showStatusBottomSheet(
+        // ignore: use_build_context_synchronously
+        context,
+        options,
+        scheduleDriver.id.toString(),
+        dateUpdate.toString());
+  }
+
+  void _showStatusBottomSheet(BuildContext context, List<String> options,
+      String scheduleId, String dateUpdate) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        String? localSelectedValue = selectedValue;
+
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
             return Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              padding: const EdgeInsets.all(20),
-              height: DevicesSettings.getHeigth(context) / 4.5,
+              height: 300,
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
+              padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 16),
                   Text(
-                    'Terminal Bondowoso',
-                    style: greyTextStyle.copyWith(
-                      fontSize: 14,
-                      fontWeight: bold,
+                    'Perbarui Status Bus',
+                    style: blackTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: semiBold,
                     ),
                   ),
-                  SizedBox(
-                    height: DevicesSettings.getHeigth(context) / 54,
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                      children: options.map<Widget>((String value) {
+                        return RadioListTile<String>(
+                          title: Text(value),
+                          value: value,
+                          groupValue: localSelectedValue,
+                          onChanged: (String? newValue) {
+                            setModalState(() {
+                              localSelectedValue = newValue;
+                            });
+                            setState(() {
+                              selectedValue = newValue;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'BWS',
-                              style: greyTextStyle.copyWith(
-                                fontSize: 12,
-                                fontWeight: bold,
-                              ),
-                            ),
-                            Text(
-                              '08:00',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 14,
-                                fontWeight: semiBold,
-                              ),
-                            ),
-                            SizedBox(
-                              height: DevicesSettings.getHeigth(context) / 54,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Image.asset('assets/ic_goto.png'),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              'SBY',
-                              style: greyTextStyle.copyWith(
-                                fontSize: 12,
-                                fontWeight: bold,
-                              ),
-                            ),
-                            Text(
-                              '10:20',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 14,
-                                fontWeight: semiBold,
-                              ),
-                            ),
-                            SizedBox(
-                              height: DevicesSettings.getHeigth(context) / 54,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: DevicesSettings.getHeigth(context) / 60,
-                  ),
-                  CustomPaint(
-                    size: const Size(double.infinity, 1),
-                    painter: LinePainter(),
-                  ),
-                  SizedBox(
-                    height: DevicesSettings.getHeigth(context) / 60,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.orange[100],
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Text(
-                          'Kelas Ekonomi',
-                          style: orangeTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: semiBold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        '2 Jam 20 Menit',
-                        style: greyTextStyle.copyWith(
-                          fontSize: 12,
-                          fontWeight: bold,
-                        ),
-                      ),
-                      const Spacer(),
-                      CustomButton(
-                        title: 'Status',
-                        height: 30,
-                        width: 70,
-                        onPressed: () {},
-                      )
-                    ],
+                  Consumer<DriverProvider>(
+                    builder: (context, driverProvider, child) {
+                      if (driverProvider.isLoading) {
+                        return CustomFilledButton(
+                          title: '',
+                          isLoading: driverProvider.isLoading,
+                        );
+                      } else {
+                        return CustomFilledButton(
+                          title: 'Perbarui Status',
+                          onPressed: () {
+                            updateStatus(driverProvider, scheduleId,
+                                selectedValue.toString(), dateUpdate);
+                          },
+                        );
+                      }
+                    },
                   )
                 ],
               ),
             );
           },
-        ),
-      ),
+        );
+      },
     );
   }
 }

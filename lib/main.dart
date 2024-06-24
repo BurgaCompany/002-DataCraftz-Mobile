@@ -2,6 +2,7 @@ import 'package:datacraftz_mobile/constant/routes.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
 import 'package:datacraftz_mobile/core/provider/conductor_provider.dart';
+import 'package:datacraftz_mobile/core/provider/driver_provider.dart';
 import 'package:datacraftz_mobile/core/provider/page_switcher_provider.dart';
 import 'package:datacraftz_mobile/core/provider/station_provider.dart';
 import 'package:datacraftz_mobile/core/provider/user_schedule_provider.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => StationProvider()),
               ChangeNotifierProvider(create: (_) => UserScheduleProvider()),
               ChangeNotifierProvider(create: (_) => ConductorProvider()),
+              ChangeNotifierProvider(create: (_) => DriverProvider()),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
