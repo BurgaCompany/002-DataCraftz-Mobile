@@ -99,8 +99,9 @@ class _ProfileConductorPageState extends State<ProfileConductorPage> {
                   title: 'Log Out',
                   onTap: () async {
                     await Session.clearUser();
+                    Navigator.pushNamedAndRemoveUntil(
                     // ignore: use_build_context_synchronously
-                    Navigator.pushNamed(context, LoginPage.routeName);
+                        context, LoginPage.routeName, (routes) => false);
                   },
                 ),
               ],
