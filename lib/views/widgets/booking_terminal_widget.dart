@@ -15,6 +15,7 @@ class BookingTerminalWidget extends StatelessWidget {
       duration,
       status;
   final VoidCallback onTap;
+
   const BookingTerminalWidget({
     super.key,
     required this.titleButton,
@@ -32,6 +33,8 @@ class BookingTerminalWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final busClassColor = getBusClassColor(busClass);
+
     return Container(
       padding: const EdgeInsets.all(20),
       margin: const EdgeInsets.only(top: 10),
@@ -43,150 +46,137 @@ class BookingTerminalWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                title ?? '',
-                style: greyTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: bold,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  status ?? '',
-                  style: whiteTextStyle.copyWith(
-                    fontSize: 12,
-                    fontWeight: semiBold,
-                  ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: DevicesSettings.getHeigth(context) / 54,
-          ),
-          Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      fromCodeName ?? '',
-                      style: greyTextStyle.copyWith(
-                        fontSize: 12,
-                        fontWeight: bold,
-                      ),
-                    ),
-                    Text(
-                      timeStart.toString().substring(0, 5),
-                      style: blackTextStyle.copyWith(
-                        fontSize: 14,
-                        fontWeight: semiBold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Image.asset('assets/ic_goto.png'),
-              ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      toCodeName ?? '',
-                      style: greyTextStyle.copyWith(
-                        fontSize: 12,
-                        fontWeight: bold,
-                      ),
-                    ),
-                    Text(
-                      timeArrive.toString().substring(0, 5),
-                      style: blackTextStyle.copyWith(
-                        fontSize: 14,
-                        fontWeight: semiBold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: DevicesSettings.getHeigth(context) / 60,
-          ),
+          buildHeaderRow(),
+          SizedBox(height: DevicesSettings.getHeigth(context) / 54),
+          buildTimeRow(),
+          SizedBox(height: DevicesSettings.getHeigth(context) / 60),
           CustomPaint(
-            size: const Size(double.infinity, 1),
-            painter: LinePainter(),
-          ),
-          SizedBox(
-            height: DevicesSettings.getHeigth(context) / 60,
-          ),
-          Row(
-            children: [
-              if (busClass == 'Patas')
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.lightGreen[100],
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text(
-                    'Kelas $busClass',
-                    style: orangeTextStyle.copyWith(
-                      fontSize: 12,
-                      color: Colors.green[500],
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                )
-              else
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.orange[100],
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text(
-                    'Kelas $busClass',
-                    style: orangeTextStyle.copyWith(
-                      fontSize: 12,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                ),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                duration ?? '',
-                style: greyTextStyle.copyWith(
-                  fontSize: 12,
-                  fontWeight: bold,
-                ),
-              ),
-              const Spacer(),
-              CustomButton(
-                title: titleButton,
-                height: 30,
-                width: 70,
-                onPressed: onTap,
-              )
-            ],
-          ),
+              size: const Size(double.infinity, 1), painter: LinePainter()),
+          SizedBox(height: DevicesSettings.getHeigth(context) / 60),
+          buildInfoRow(busClassColor),
         ],
       ),
     );
+  }
+
+  Row buildHeaderRow() {
+    return Row(
+      children: [
+        Text(
+          title ?? '',
+          style: greyTextStyle.copyWith(fontSize: 14, fontWeight: bold),
+        ),
+        const Spacer(),
+        if (status != null)
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: getStatusColor(status),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              status ?? '',
+              style:
+                  whiteTextStyle.copyWith(fontSize: 12, fontWeight: semiBold),
+            ),
+          )
+      ],
+    );
+  }
+
+  Row buildTimeRow() {
+    return Row(
+      children: [
+        Expanded(flex: 2, child: buildTimeColumn(fromCodeName, timeStart)),
+        Expanded(child: Image.asset('assets/ic_goto.png')),
+        Expanded(
+            flex: 2,
+            child: buildTimeColumn(toCodeName, timeArrive, isEnd: true)),
+      ],
+    );
+  }
+
+  Column buildTimeColumn(String? codeName, String? time, {bool isEnd = false}) {
+    return Column(
+      crossAxisAlignment:
+          isEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        Text(
+          codeName ?? '',
+          style: greyTextStyle.copyWith(fontSize: 12, fontWeight: bold),
+        ),
+        Text(
+          time?.substring(0, 5) ?? '',
+          style: blackTextStyle.copyWith(fontSize: 14, fontWeight: semiBold),
+        ),
+      ],
+    );
+  }
+
+  Row buildInfoRow(Color? busClassColor) {
+    return Row(
+      children: [
+        if (busClass != null)
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: busClassColor,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              'Kelas $busClass',
+              style: getBusClassTextStyle(busClass),
+            ),
+          ),
+        const SizedBox(width: 10),
+        Text(
+          duration ?? '',
+          style: greyTextStyle.copyWith(fontSize: 12, fontWeight: bold),
+        ),
+        const Spacer(),
+        CustomButton(
+          title: titleButton,
+          height: 30,
+          width: 70,
+          onPressed: onTap,
+        ),
+      ],
+    );
+  }
+
+  Color? getStatusColor(String? status) {
+    switch (status) {
+      case 'Belum Berangkat':
+        return Colors.orange;
+      case 'Berangkat':
+        return Colors.green;
+      default:
+        return Colors.red;
+    }
+  }
+
+  Color? getBusClassColor(String? busClass) {
+    switch (busClass) {
+      case 'Patas':
+        return Colors.lightGreen[100];
+      default:
+        return Colors.orange[100];
+    }
+  }
+
+  TextStyle getBusClassTextStyle(String? busClass) {
+    switch (busClass) {
+      case 'Patas':
+        return orangeTextStyle.copyWith(
+          fontSize: 12,
+          color: Colors.green[500],
+          fontWeight: semiBold,
+        );
+      default:
+        return orangeTextStyle.copyWith(
+          fontSize: 12,
+          fontWeight: semiBold,
+        );
+    }
   }
 }

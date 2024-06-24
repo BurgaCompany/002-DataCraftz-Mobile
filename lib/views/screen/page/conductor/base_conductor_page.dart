@@ -3,6 +3,7 @@ import 'package:datacraftz_mobile/core/model/login_model.dart';
 import 'package:datacraftz_mobile/core/provider/conductor_provider.dart';
 import 'package:datacraftz_mobile/views/screen/page/conductor/check_ticket_conductor_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/conductor/profile_conductor_page.dart';
+import 'package:datacraftz_mobile/views/utils/camera_permission_helper.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
 import 'package:datacraftz_mobile/views/utils/scanner_helper.dart';
 import 'package:datacraftz_mobile/views/utils/shared_user.dart';
@@ -37,12 +38,16 @@ class _BaseConductorPageState extends State<BaseConductorPage> {
   }
 
   Future<void> _scanQRCode() async {
-    String? barcodeScanResult = await QRCodeScanner.scanQR(context);
-    if (barcodeScanResult != null) {
-      setState(() {
-        _barcode = barcodeScanResult;
-        _checkTicket(barcodeScanResult);
-      });
+    bool permissionGranted =
+        await CameraPermissionHelper.requestCameraPermission(context);
+    if (permissionGranted) {
+      String? barcodeScanResult = await QRCodeScanner.scanQR(context);
+      if (barcodeScanResult != null) {
+        setState(() {
+          _barcode = barcodeScanResult;
+          _checkTicket(barcodeScanResult);
+        });
+      }
     }
   }
 
@@ -55,8 +60,9 @@ class _BaseConductorPageState extends State<BaseConductorPage> {
     } else {
       if (mounted) {
         const CustomSnackBar(
-                message: 'Kode Ticket Tidak Tersedia', type: SnackBarType.error)
-            .show(context);
+          message: 'Kode Ticket Tidak Tersedia',
+          type: SnackBarType.error,
+        ).show(context);
       }
     }
   }

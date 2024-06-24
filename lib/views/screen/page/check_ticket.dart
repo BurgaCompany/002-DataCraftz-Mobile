@@ -1,7 +1,7 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/model/history_goon_model.dart';
-import 'package:datacraftz_mobile/views/screen/page/payment_ticket_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/tracking_bus_page.dart';
 import 'package:datacraftz_mobile/views/utils/convert_string.dart';
 import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
 import 'package:datacraftz_mobile/views/widgets/custom_container.dart';
@@ -422,10 +422,16 @@ class CheckTicketPage extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(20),
         child: CustomFilledButton(
-          title: 'Batalkan Perjalanan',
-          color: Colors.red,
+          title: 'Lacak Bus',
           onPressed: () {
-            Navigator.pushNamed(context, PaymentTicketPage.routeName);
+            Navigator.push(
+              // ignore: use_build_context_synchronously
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    TrackingBusPage(url: data.busId.toString()),
+              ),
+            );
           },
         ),
       ),
