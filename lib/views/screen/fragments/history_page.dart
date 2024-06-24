@@ -166,6 +166,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                 price: dataHistoryGoon.schedulePrice.toString(),
                                 toCodeName:
                                     dataHistoryGoon.scheduleToStationCodeName,
+                                dateDeparture: dataHistoryGoon.dateDeparture,
                                 onTap: () {
                                   Navigator.pushNamed(
                                       context, CheckTicketPage.routeName,
