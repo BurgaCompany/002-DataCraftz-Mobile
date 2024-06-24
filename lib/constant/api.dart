@@ -15,4 +15,7 @@ class ApiUrl {
   //Conductor
   static const String checkTicket = "$baseUrl/scan/conductor";
   static const String updateTicket = "$baseUrl/check/update";
+  //Driver
+  static const String checkScheduleDriver = '$baseUrl/driver/list';
+  static const String updateStatusBus = '$baseUrl/driver/check';
 }
