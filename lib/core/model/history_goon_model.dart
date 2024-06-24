@@ -1,136 +1,135 @@
 import 'dart:convert';
 
 class NowScheduleStationModel {
-  int? statusCode;
-  String? message;
-  List<DataReservationGoon>? dataReservation;
+    int? statusCode;
+    String? message;
+    List<DataReservationGoon>? dataReservation;
 
-  NowScheduleStationModel({
-    this.statusCode,
-    this.message,
-    this.dataReservation,
-  });
+    NowScheduleStationModel({
+        this.statusCode,
+        this.message,
+        this.dataReservation,
+    });
 
-  NowScheduleStationModel copyWith({
-    int? statusCode,
-    String? message,
-    List<DataReservationGoon>? dataReservation,
-  }) =>
-      NowScheduleStationModel(
-        statusCode: statusCode ?? this.statusCode,
-        message: message ?? this.message,
-        dataReservation: dataReservation ?? this.dataReservation,
-      );
+    NowScheduleStationModel copyWith({
+        int? statusCode,
+        String? message,
+        List<DataReservationGoon>? dataReservation,
+    }) => 
+        NowScheduleStationModel(
+            statusCode: statusCode ?? this.statusCode,
+            message: message ?? this.message,
+            dataReservation: dataReservation ?? this.dataReservation,
+        );
 
-  factory NowScheduleStationModel.fromRawJson(String str) =>
-      NowScheduleStationModel.fromJson(json.decode(str));
+    factory NowScheduleStationModel.fromRawJson(String str) => NowScheduleStationModel.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+    String toRawJson() => json.encode(toJson());
 
-  factory NowScheduleStationModel.fromJson(Map<String, dynamic> json) =>
-      NowScheduleStationModel(
+    factory NowScheduleStationModel.fromJson(Map<String, dynamic> json) => NowScheduleStationModel(
         statusCode: json["statusCode"],
         message: json["message"],
-        dataReservation: json["data_reservation"] == null
-            ? []
-            : List<DataReservationGoon>.from(json["data_reservation"]!
-                .map((x) => DataReservationGoon.fromJson(x))),
-      );
+        dataReservation: json["data_reservation"] == null ? [] : List<DataReservationGoon>.from(json["data_reservation"]!.map((x) => DataReservationGoon.fromJson(x))),
+    );
 
-  Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toJson() => {
         "statusCode": statusCode,
         "message": message,
-        "data_reservation": dataReservation == null
-            ? []
-            : List<dynamic>.from(dataReservation!.map((x) => x.toJson())),
-      };
+        "data_reservation": dataReservation == null ? [] : List<dynamic>.from(dataReservation!.map((x) => x.toJson())),
+    };
 }
 
 class DataReservationGoon {
-  String? orderId;
-  String? userName;
-  String? scheduleFromStation;
-  String? scheduleToStation;
-  String? scheduleFromStationCodeName;
-  String? scheduleToStationCodeName;
-  String? schedulePwt;
-  String? busClass;
-  int? schedulePrice;
-  String? scheduleTimeStart;
-  String? scheduleTimeArrive;
-  String? licensePlateNumber;
-  int? ticketsBooked;
-  DateTime? dateDeparture;
-  String? status;
-  String? statusBus;
+    String? orderId;
+    String? userName;
+    int? driverId;
+    int? busId;
+    String? scheduleFromStation;
+    String? scheduleToStation;
+    String? scheduleFromStationCodeName;
+    String? scheduleToStationCodeName;
+    String? schedulePwt;
+    String? busClass;
+    int? schedulePrice;
+    String? scheduleTimeStart;
+    String? scheduleTimeArrive;
+    String? licensePlateNumber;
+    int? ticketsBooked;
+    DateTime? dateDeparture;
+    String? status;
+    String? statusBus;
 
-  DataReservationGoon({
-    this.orderId,
-    this.userName,
-    this.scheduleFromStation,
-    this.scheduleToStation,
-    this.scheduleFromStationCodeName,
-    this.scheduleToStationCodeName,
-    this.schedulePwt,
-    this.busClass,
-    this.schedulePrice,
-    this.scheduleTimeStart,
-    this.scheduleTimeArrive,
-    this.licensePlateNumber,
-    this.ticketsBooked,
-    this.dateDeparture,
-    this.status,
-    this.statusBus,
-  });
+    DataReservationGoon({
+        this.orderId,
+        this.userName,
+        this.driverId,
+        this.busId,
+        this.scheduleFromStation,
+        this.scheduleToStation,
+        this.scheduleFromStationCodeName,
+        this.scheduleToStationCodeName,
+        this.schedulePwt,
+        this.busClass,
+        this.schedulePrice,
+        this.scheduleTimeStart,
+        this.scheduleTimeArrive,
+        this.licensePlateNumber,
+        this.ticketsBooked,
+        this.dateDeparture,
+        this.status,
+        this.statusBus,
+    });
 
-  DataReservationGoon copyWith({
-    String? orderId,
-    String? userName,
-    String? scheduleFromStation,
-    String? scheduleToStation,
-    String? scheduleFromStationCodeName,
-    String? scheduleToStationCodeName,
-    String? schedulePwt,
-    String? busClass,
-    int? schedulePrice,
-    String? scheduleTimeStart,
-    String? scheduleTimeArrive,
-    String? licensePlateNumber,
-    int? ticketsBooked,
-    DateTime? dateDeparture,
-    String? status,
-    String? statusBus,
-  }) =>
-      DataReservationGoon(
-        orderId: orderId ?? this.orderId,
-        userName: userName ?? this.userName,
-        scheduleFromStation: scheduleFromStation ?? this.scheduleFromStation,
-        scheduleToStation: scheduleToStation ?? this.scheduleToStation,
-        scheduleFromStationCodeName:
-            scheduleFromStationCodeName ?? this.scheduleFromStationCodeName,
-        scheduleToStationCodeName:
-            scheduleToStationCodeName ?? this.scheduleToStationCodeName,
-        schedulePwt: schedulePwt ?? this.schedulePwt,
-        busClass: busClass ?? this.busClass,
-        schedulePrice: schedulePrice ?? this.schedulePrice,
-        scheduleTimeStart: scheduleTimeStart ?? this.scheduleTimeStart,
-        scheduleTimeArrive: scheduleTimeArrive ?? this.scheduleTimeArrive,
-        licensePlateNumber: licensePlateNumber ?? this.licensePlateNumber,
-        ticketsBooked: ticketsBooked ?? this.ticketsBooked,
-        dateDeparture: dateDeparture ?? this.dateDeparture,
-        status: status ?? this.status,
-        statusBus: statusBus ?? this.statusBus,
-      );
+    DataReservationGoon copyWith({
+        String? orderId,
+        String? userName,
+        int? driverId,
+        int? busId,
+        String? scheduleFromStation,
+        String? scheduleToStation,
+        String? scheduleFromStationCodeName,
+        String? scheduleToStationCodeName,
+        String? schedulePwt,
+        String? busClass,
+        int? schedulePrice,
+        String? scheduleTimeStart,
+        String? scheduleTimeArrive,
+        String? licensePlateNumber,
+        int? ticketsBooked,
+        DateTime? dateDeparture,
+        String? status,
+        String? statusBus,
+    }) => 
+        DataReservationGoon(
+            orderId: orderId ?? this.orderId,
+            userName: userName ?? this.userName,
+            driverId: driverId ?? this.driverId,
+            busId: busId ?? this.busId,
+            scheduleFromStation: scheduleFromStation ?? this.scheduleFromStation,
+            scheduleToStation: scheduleToStation ?? this.scheduleToStation,
+            scheduleFromStationCodeName: scheduleFromStationCodeName ?? this.scheduleFromStationCodeName,
+            scheduleToStationCodeName: scheduleToStationCodeName ?? this.scheduleToStationCodeName,
+            schedulePwt: schedulePwt ?? this.schedulePwt,
+            busClass: busClass ?? this.busClass,
+            schedulePrice: schedulePrice ?? this.schedulePrice,
+            scheduleTimeStart: scheduleTimeStart ?? this.scheduleTimeStart,
+            scheduleTimeArrive: scheduleTimeArrive ?? this.scheduleTimeArrive,
+            licensePlateNumber: licensePlateNumber ?? this.licensePlateNumber,
+            ticketsBooked: ticketsBooked ?? this.ticketsBooked,
+            dateDeparture: dateDeparture ?? this.dateDeparture,
+            status: status ?? this.status,
+            statusBus: statusBus ?? this.statusBus,
+        );
 
-  factory DataReservationGoon.fromRawJson(String str) =>
-      DataReservationGoon.fromJson(json.decode(str));
+    factory DataReservationGoon.fromRawJson(String str) => DataReservationGoon.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+    String toRawJson() => json.encode(toJson());
 
-  factory DataReservationGoon.fromJson(Map<String, dynamic> json) =>
-      DataReservationGoon(
+    factory DataReservationGoon.fromJson(Map<String, dynamic> json) => DataReservationGoon(
         orderId: json["order_id"],
         userName: json["user_name"],
+        driverId: json["driver_id"],
+        busId: json["bus_id"],
         scheduleFromStation: json["schedule_from_station"],
         scheduleToStation: json["schedule_to_station"],
         scheduleFromStationCodeName: json["schedule_from_station_code_name"],
@@ -142,16 +141,16 @@ class DataReservationGoon {
         scheduleTimeArrive: json["schedule_time_arrive"],
         licensePlateNumber: json["license_plate_number"],
         ticketsBooked: json["tickets_booked"],
-        dateDeparture: json["date_departure"] == null
-            ? null
-            : DateTime.parse(json["date_departure"]),
+        dateDeparture: json["date_departure"] == null ? null : DateTime.parse(json["date_departure"]),
         status: json["status"],
         statusBus: json["status_bus"],
-      );
+    );
 
-  Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toJson() => {
         "order_id": orderId,
         "user_name": userName,
+        "driver_id": driverId,
+        "bus_id": busId,
         "schedule_from_station": scheduleFromStation,
         "schedule_to_station": scheduleToStation,
         "schedule_from_station_code_name": scheduleFromStationCodeName,
@@ -163,9 +162,8 @@ class DataReservationGoon {
         "schedule_time_arrive": scheduleTimeArrive,
         "license_plate_number": licensePlateNumber,
         "tickets_booked": ticketsBooked,
-        "date_departure":
-            "${dateDeparture!.year.toString().padLeft(4, '0')}-${dateDeparture!.month.toString().padLeft(2, '0')}-${dateDeparture!.day.toString().padLeft(2, '0')}",
+        "date_departure": "${dateDeparture!.year.toString().padLeft(4, '0')}-${dateDeparture!.month.toString().padLeft(2, '0')}-${dateDeparture!.day.toString().padLeft(2, '0')}",
         "status": status,
         "status_bus": statusBus,
-      };
+    };
 }
