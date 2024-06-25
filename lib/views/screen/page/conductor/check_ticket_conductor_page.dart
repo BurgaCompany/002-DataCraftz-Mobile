@@ -40,6 +40,13 @@ class _CheckTicketConductorPageState extends State<CheckTicketConductorPage> {
     }
   }
 
+  bool isDateExpired(DateTime date) {
+    final now = DateTime.now();
+    return date.year < now.year ||
+        (date.year == now.year && date.month < now.month) ||
+        (date.year == now.year && date.day < now.day);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -463,6 +470,14 @@ class _CheckTicketConductorPageState extends State<CheckTicketConductorPage> {
               return CustomFilledButton(
                 color: Colors.grey,
                 title: 'Tiket Sudah Digunakan',
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              );
+            } else if (isDateExpired(dateReservation)) {
+              return CustomFilledButton(
+                color: Colors.grey,
+                title: 'Tiket Sudah Hangus',
                 onPressed: () {
                   Navigator.pop(context);
                 },
