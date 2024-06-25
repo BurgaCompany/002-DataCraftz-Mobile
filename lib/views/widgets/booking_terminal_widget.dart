@@ -14,6 +14,7 @@ class BookingTerminalWidget extends StatelessWidget {
       price,
       duration,
       status;
+  final DateTime? dateDeparture;
   final VoidCallback onTap;
 
   const BookingTerminalWidget({
@@ -28,6 +29,7 @@ class BookingTerminalWidget extends StatelessWidget {
     this.price,
     this.duration,
     this.status,
+    this.dateDeparture,
     required this.onTap,
   });
 
@@ -60,6 +62,10 @@ class BookingTerminalWidget extends StatelessWidget {
   }
 
   Row buildHeaderRow() {
+    final currentStatus = dateDeparture != null && isDateExpired(dateDeparture!)
+        ? 'Hangus'
+        : status;
+
     return Row(
       children: [
         Text(
@@ -67,15 +73,15 @@ class BookingTerminalWidget extends StatelessWidget {
           style: greyTextStyle.copyWith(fontSize: 14, fontWeight: bold),
         ),
         const Spacer(),
-        if (status != null)
+        if (currentStatus != null)
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: getStatusColor(status),
+              color: getStatusColor(currentStatus),
               borderRadius: BorderRadius.circular(5),
             ),
             child: Text(
-              status ?? '',
+              currentStatus,
               style:
                   whiteTextStyle.copyWith(fontSize: 12, fontWeight: semiBold),
             ),
@@ -144,12 +150,23 @@ class BookingTerminalWidget extends StatelessWidget {
     );
   }
 
+  bool isDateExpired(DateTime date) {
+    final now = DateTime.now();
+    return date.year < now.year ||
+        (date.year == now.year && date.month < now.month) ||
+        (date.year == now.year &&
+            date.month == now.month &&
+            date.day < now.day);
+  }
+
   Color? getStatusColor(String? status) {
     switch (status) {
       case 'Belum Berangkat':
         return Colors.orange;
       case 'Berangkat':
         return Colors.green;
+      case 'Hangus':
+        return Colors.red;
       default:
         return Colors.red;
     }

@@ -22,18 +22,11 @@ class BaseDriverPage extends StatefulWidget {
 class _BaseDriverPageState extends State<BaseDriverPage> {
   UserModel? _userModel;
   String? selectedValue;
-  DateTime? dateNow;
-  String? dateUpdate;
   @override
   void initState() {
     super.initState();
     loadUser();
     Provider.of<DriverProvider>(context, listen: false).getListSchedule();
-    final date = DateTime.now();
-    setState(() {
-      dateNow = date;
-      dateUpdate = '${date.year}-${date.month}-${date.day}';
-    });
   }
 
   Future<void> loadUser() async {
@@ -43,9 +36,9 @@ class _BaseDriverPageState extends State<BaseDriverPage> {
     });
   }
 
-  void updateStatus(DriverProvider driverProvider, String id, String status,
-      String date) async {
-    final response = await driverProvider.updateStatusBus(id, status, date);
+  void updateStatus(
+      DriverProvider driverProvider, String id, String status) async {
+    final response = await driverProvider.updateStatusBus(id, status);
     if (response.statusCode == 200 && mounted) {
       Navigator.pop(context);
       const CustomSnackBar(
@@ -155,12 +148,11 @@ class _BaseDriverPageState extends State<BaseDriverPage> {
         // ignore: use_build_context_synchronously
         context,
         options,
-        scheduleDriver.id.toString(),
-        dateUpdate.toString());
+        scheduleDriver.busId.toString());
   }
 
-  void _showStatusBottomSheet(BuildContext context, List<String> options,
-      String scheduleId, String dateUpdate) {
+  void _showStatusBottomSheet(
+      BuildContext context, List<String> options, String busId) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -213,8 +205,8 @@ class _BaseDriverPageState extends State<BaseDriverPage> {
                         return CustomFilledButton(
                           title: 'Perbarui Status',
                           onPressed: () {
-                            updateStatus(driverProvider, scheduleId,
-                                selectedValue.toString(), dateUpdate);
+                            updateStatus(driverProvider, busId,
+                                selectedValue.toString());
                           },
                         );
                       }
