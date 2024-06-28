@@ -40,7 +40,7 @@ class _BaseConductorPageState extends State<BaseConductorPage> {
   Future<void> _scanQRCode() async {
     bool permissionGranted =
         await CameraPermissionHelper.requestCameraPermission(context);
-    if (permissionGranted) {
+    if (permissionGranted && mounted) {
       String? barcodeScanResult = await QRCodeScanner.scanQR(context);
       if (barcodeScanResult != null) {
         setState(() {
