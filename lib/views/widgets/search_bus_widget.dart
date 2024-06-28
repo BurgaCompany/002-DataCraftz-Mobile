@@ -66,22 +66,46 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
     _selectedDates = '${dateNow!.year}-${dateNow!.month}-${dateNow!.day}';
   }
 
-  void _pickDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(dateNow!.year, dateNow!.month, dateNow!.day),
-      lastDate: DateTime(2101),
-      confirmText: 'OK',
-      cancelText: 'Batal',
-    );
+  void _pickDateInModal(BuildContext context) async {
+    DateTime now = DateTime.now();
+    DateTime lastDate = DateTime(now.year, now.month + 2, now.day);
 
-    if (pickedDate != null) {
-      setState(() {
-        _selectedDate =
-            '${getDayOfWeek(pickedDate.weekday)}, ${pickedDate.day} ${getMonth(pickedDate.month)} ${pickedDate.year}';
-      });
-    }
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          height: DevicesSettings.getHeigth(context) * 0.5,
+          child: Column(
+            children: [
+              Text(
+                'Pilih Tanggal',
+                style: blackTextStyle.copyWith(
+                  fontSize: 20,
+                  fontWeight: bold,
+                ),
+              ),
+              Expanded(
+                child: CalendarDatePicker(
+                  initialDate: now,
+                  firstDate: DateTime(now.year, now.month, now.day),
+                  lastDate: lastDate,
+                  onDateChanged: (DateTime pickedDate) {
+                    setState(() {
+                      _selectedDate =
+                          '${getDayOfWeek(pickedDate.weekday)}, ${pickedDate.day} ${getMonth(pickedDate.month)} ${pickedDate.year}';
+                      _selectedDates =
+                          '${pickedDate.year}-${pickedDate.month}-${pickedDate.day}';
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void updateCurrentValue(int value) {
@@ -213,7 +237,7 @@ class _SearchBusWidgetState extends State<SearchBusWidget> {
               Expanded(
                 flex: 2,
                 child: GestureDetector(
-                  onTap: () => _pickDate(context),
+                  onTap: () => _pickDateInModal(context),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
