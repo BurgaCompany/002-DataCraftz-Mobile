@@ -36,6 +36,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
         return responseData;
       } else {
+        isLoading = false;
         notifyListeners();
         return responseData;
       }
@@ -70,6 +71,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
         return response;
       } else {
+        isLoading = false;
         notifyListeners();
         return response;
       }
