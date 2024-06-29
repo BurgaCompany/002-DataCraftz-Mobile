@@ -7,6 +7,7 @@ import 'package:datacraftz_mobile/views/screen/page/conductor/check_ticket_condu
 import 'package:datacraftz_mobile/views/screen/page/conductor/profile_conductor_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/driver/base_page_driver.dart';
 import 'package:datacraftz_mobile/views/screen/page/driver/profile_driver_page.dart';
+import 'package:datacraftz_mobile/views/screen/page/edit_profile_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/go_station_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/login_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/rating_driver_page.dart';
@@ -28,6 +29,7 @@ dynamic routes = {
   BookingBillPage.routeName: (context) => const BookingBillPage(),
   RatingDriverPage.routeName: (context) => const RatingDriverPage(),
   PaymentTicketPage.routeName: (context) => const PaymentTicketPage(),
+  EditProfilePage.routeName: (context) => const EditProfilePage(),
   // Driver
   BaseDriverPage.routeName: (context) => const BaseDriverPage(),
   ProfileDriverPage.routeName: (context) => const ProfileDriverPage(),

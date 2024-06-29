@@ -3,6 +3,7 @@ class ApiUrl {
   static const String baseUrl = "https://transgo.burga.web.id/api";
   static const String register = "$baseUrl/auth/register";
   static const String login = "$baseUrl/auth/login";
+  static const String editProfile = "$baseUrl/auth/edit";
   //Station
   static const String station = "$baseUrl/station";
   static const String stationScheduleSearch = "$baseUrl/schedules/find";
