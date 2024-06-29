@@ -47,11 +47,23 @@ class _LoginPageState extends State<LoginPage> {
       if (response['statusCode'] == 200 && mounted) {
         final role = response['role'];
         if (role == 'Passenger') {
-          Navigator.pushNamed(context, BasePage.routeName);
+          Navigator.pushNamedAndRemoveUntil(
+              // ignore: use_build_context_synchronously
+              context,
+              BasePage.routeName,
+              (routes) => false);
         } else if (role == 'Driver') {
-          Navigator.pushNamed(context, BaseDriverPage.routeName);
+          Navigator.pushNamedAndRemoveUntil(
+              // ignore: use_build_context_synchronously
+              context,
+              BaseDriverPage.routeName,
+              (routes) => false);
         } else {
-          Navigator.pushNamed(context, BaseConductorPage.routeName);
+          Navigator.pushNamedAndRemoveUntil(
+              // ignore: use_build_context_synchronously
+              context,
+              BaseConductorPage.routeName,
+              (routes) => false);
         }
       } else {
         if (mounted) {

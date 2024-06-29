@@ -1,4 +1,6 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
+import 'package:datacraftz_mobile/core/model/login_model.dart';
+import 'package:datacraftz_mobile/views/screen/page/edit_profile_page.dart';
 import 'package:datacraftz_mobile/views/screen/page/login_page.dart';
 import 'package:datacraftz_mobile/views/utils/shared_user.dart';
 import 'package:datacraftz_mobile/views/widgets/profile_menu_widget.dart';
@@ -12,6 +14,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  UserModel? _userModel;
+
+  @override
+  void initState() {
+    loadUser();
+    super.initState();
+  }
+
+  Future<void> loadUser() async {
+    UserModel? userModel = await Session.getUser();
+    setState(() {
+      _userModel = userModel;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 16,
                 ),
                 Text(
-                  'Aditya Ibrar Abdillah',
+                  _userModel?.result?.name ?? '',
                   style: blackTextStyle.copyWith(
                     fontSize: 18,
                     fontWeight: semiBold,
@@ -59,27 +76,37 @@ class _ProfilePageState extends State<ProfilePage> {
                 ProfileMenuItem(
                   iconUrl: Icons.person,
                   title: 'Edit Profile',
-                  onTap: () async {},
+                  onTap: () {
+                    Navigator.pushNamed(context, EditProfilePage.routeName);
+                  },
                 ),
                 ProfileMenuItem(
                   iconUrl: Icons.shield_outlined,
                   title: 'Edit Password',
-                  onTap: () async {},
+                  onTap: () {
+                    Navigator.pushNamed(context, EditProfilePage.routeName);
+                  },
                 ),
                 ProfileMenuItem(
                   iconUrl: Icons.mail_outline,
                   title: 'Email',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, EditProfilePage.routeName);
+                  },
                 ),
                 ProfileMenuItem(
                   iconUrl: Icons.phone_outlined,
                   title: 'Nomer HP',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, EditProfilePage.routeName);
+                  },
                 ),
                 ProfileMenuItem(
                   iconUrl: Icons.location_on_outlined,
                   title: 'Alamat',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, EditProfilePage.routeName);
+                  },
                 ),
                 ProfileMenuItem(
                   iconUrl: Icons.logout_outlined,

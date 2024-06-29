@@ -79,4 +79,32 @@ class AuthProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future authEdit(
+      String password, String email, String phone, String address) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      final response = await ApiClient().post(
+        ApiUrl.editProfile,
+        body: {
+          'password': password,
+          'email': email,
+          'phone_number': phone,
+          'address': address,
+        },
+      );
+      if (response.statusCode == 200) {
+        isLoading = false;
+        notifyListeners();
+        return response;
+      } else {
+        isLoading = false;
+        notifyListeners();
+        throw Exception('Failed to edit profile');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
