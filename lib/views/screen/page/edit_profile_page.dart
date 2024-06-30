@@ -1,6 +1,7 @@
 import 'package:datacraftz_mobile/constant/theme.dart';
 import 'package:datacraftz_mobile/core/model/login_model.dart';
 import 'package:datacraftz_mobile/core/provider/auth_provider.dart';
+import 'package:datacraftz_mobile/views/screen/page/login_page.dart';
 import 'package:datacraftz_mobile/views/utils/shared_user.dart';
 import 'package:datacraftz_mobile/views/utils/validation.dart';
 import 'package:datacraftz_mobile/views/widgets/button_form_widget.dart';
@@ -64,11 +65,48 @@ class _EditProfilePageState extends State<EditProfilePage> {
         addressController.text,
       );
       if (response.statusCode == 200 && mounted) {
-        Navigator.pop(context);
-        const CustomSnackBar(
-          message: 'Profile Berhasil Diubah',
-          type: SnackBarType.error,
-        ).show(context);
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                'Profile Berhasil Diubah',
+                style: blackTextStyle.copyWith(
+                  fontSize: 18,
+                  fontWeight: semiBold,
+                ),
+              ),
+              content: Text(
+                'Session Anda telah habis, Silahkan Login Kembali',
+                style: blackTextStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: regular,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await Session.clearUser();
+                    Navigator.pushNamedAndRemoveUntil(
+                        // ignore: use_build_context_synchronously
+                        context,
+                        LoginPage.routeName,
+                        (routes) => false);
+                  },
+                  child: Text(
+                    'Ok',
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: semiBold,
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
       } else if (mounted) {
         Navigator.pop(context);
         const CustomSnackBar(
@@ -159,7 +197,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       );
                     } else {
                       return CustomFilledButton(
-                        title: 'Masuk',
+                        title: 'Perbarui Profile',
                         onPressed: () => editProfile(authProvider),
                       );
                     }
