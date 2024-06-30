@@ -9,7 +9,14 @@ import 'package:flutter/material.dart';
 class AuthProvider extends ChangeNotifier {
   UserModel? _userModel;
   UserModel? get userModel => _userModel;
+  String? _userId;
   bool isLoading = false;
+
+  Future<void> loadUser() async {
+    await Session.getUser().then((value) {
+      _userId = value!.result!.id.toString();
+    });
+  }
 
   Future<void> checkUser() async {
     _userModel = await Session.getUser();
@@ -82,15 +89,16 @@ class AuthProvider extends ChangeNotifier {
 
   Future authEdit(
       String password, String email, String phone, String address) async {
+    await loadUser();
     isLoading = true;
     notifyListeners();
     try {
       final response = await ApiClient().post(
-        ApiUrl.editProfile,
+        '${ApiUrl.editProfile}?id=$_userId',
         body: {
           'password': password,
           'email': email,
-          'phone_number': phone,
+          'phone': phone,
           'address': address,
         },
       );
